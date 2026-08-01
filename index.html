@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Journey of Love - Birthday Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================= LAYAR OPENING ROMANTIS ================= -->
+  <!-- Halaman Depan / Opening Screen -->
+<div id="opening-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #2c1b4d; color: white; text-align: center;">
+  <!-- Foto Besar (Ganti path-nya sesuai nama fotomu di folder assets) -->
+  <img src="assets/foto_depan.png" alt="Opening Photo" style="max-width: 80%; max-height: 60vh; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); margin-bottom: 24px; object-fit: cover;">
+  
+  <!-- Tombol MULAI -->
+  <button onclick="startGame()" style="padding: 14px 40px; font-size: 20px; font-weight: bold; background: #ff9f43; color: #2c1b4d; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 0 #d98032;">
+    MULAI
+  </button>
+</div>
+
+  <!-- ================= GAME CONTAINER ================= -->
+  <div id="game-container" class="hidden">
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <!-- Overlay Transisi Fade In/Out -->
+    <div id="fade-overlay"></div>
+
+    <!-- Petunjuk Kontrol -->
+    <div id="control-hint">
+      <span>🕹️ Jalan: <b>WASD / Panah</b></span> |
+      <span>💬 Bicara: <b>SPASI / E</b></span>
+    </div>
+
+    <!-- Kotak Dialog RPG -->
+    <div id="dialog-box" class="hidden">
+      <h3 id="dialog-name">NAMA</h3>
+      <p id="dialog-text">Pesan...</p>
+      <span id="dialog-instruction">*Suara sedang diputar...*</span>
+    </div>
+
+    <!-- UI Progress Box & Navigasi Panah -->
+    <div id="progress-box">
+      💖 Ucapan: <span id="progress-count">0</span> / 11
+    </div>
+
+    <div id="quest-guide">
+      🧭 Target: <span id="target-name">Cari Teman Terdekat</span>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
