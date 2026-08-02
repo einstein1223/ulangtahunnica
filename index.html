@@ -381,6 +381,108 @@
     }
     .text-sticky .tl { width:50px; height:2px; background:rgba(255,105,180,.4); margin:28px auto; }
 
+    /* ── BENTO PHOTO GRID (Wix Studio x Pantone inspired) ── */
+    .scene-bento {
+      padding: 80px 24px;
+      position: relative;
+      z-index: 3;
+    }
+    /* Scrolling text marquee above bento */
+    .bento-marquee-wrap {
+      overflow: hidden;
+      white-space: nowrap;
+      margin-bottom: 48px;
+      padding: 14px 0;
+      border-top: 1px solid rgba(255,105,180,0.15);
+      border-bottom: 1px solid rgba(255,105,180,0.15);
+      mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    }
+    .bento-marquee-track {
+      display: inline-flex;
+      animation: marqueeScroll 22s linear infinite;
+      gap: 0;
+    }
+    .bento-marquee-track span {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(11px, 1.5vw, 14px);
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: rgba(255,182,193,0.55);
+      padding: 0 32px;
+    }
+    .bento-marquee-track span.dot {
+      color: #ff69b4;
+      padding: 0;
+      letter-spacing: 0;
+      opacity: 0.8;
+    }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    /* Bento grid container */
+    .bento-grid {
+      display: grid;
+      max-width: 900px;
+      margin: 0 auto;
+      gap: 10px;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: auto;
+    }
+    .bento-cell {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(255,20,80,0.05);
+      border: 1px solid rgba(255,105,180,0.18);
+      cursor: pointer;
+      /* Initial state for reveal */
+      opacity: 0;
+      transform: translateY(40px) scale(0.96);
+      will-change: opacity, transform;
+    }
+    .bento-cell img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .bento-cell:hover img { transform: scale(1.07); }
+    .bento-cell::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(255,51,133,0.25) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .bento-cell:hover::after { opacity: 1; }
+    /* Cell sizing */
+    .bento-cell.tall   { grid-row: span 2; }
+    .bento-cell.wide   { grid-column: span 2; }
+    .bento-cell.sq     { aspect-ratio: 1 / 1; }
+    .bento-cell.sq-sm  { aspect-ratio: 1 / 1; }
+    /* Cell heights */
+    .bento-cell.h-lg { min-height: clamp(220px, 32vw, 400px); }
+    .bento-cell.h-md { min-height: clamp(160px, 20vw, 250px); }
+    .bento-cell.h-sm { min-height: clamp(120px, 15vw, 190px); }
+    /* Row 2: 3 equal cols */
+    .bento-row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      max-width: 900px;
+      margin: 10px auto 0;
+    }
+    .bento-row2 .bento-cell { min-height: clamp(130px, 18vw, 220px); }
+    @media (max-width: 600px) {
+      .bento-grid { grid-template-columns: 1fr 1fr; gap: 7px; }
+      .bento-row2 { grid-template-columns: 1fr 1fr; gap: 7px; }
+      .bento-cell.h-lg { min-height: 180px; }
+      .bento-cell.h-md { min-height: 130px; }
+      .bento-cell.h-sm { min-height: 100px; }
+      .bento-row2 .bento-cell { min-height: 120px; }
+    }
+
     /* ── VINYL PLAYER ── */
     .scene-vinyl {
       min-height:100vh; display:flex; flex-direction:column; align-items:center;
@@ -689,6 +791,67 @@
           <p>terpala dunia ini walaupun berisik, aku akan menjadi penutup telinga mu</p>
           <div class="tl"></div>
           <p style="font-size:clamp(12px,1.8vw,16px);color:rgba(255,182,193,.7)">PUTAR PIRINGAN HITAM DI BAWAH.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ── BENTO PHOTO GRID ── -->
+    <section class="scene scene-bento" id="bentoSection">
+      <!-- Marquee transition -->
+      <div class="bento-marquee-wrap">
+        <div class="bento-marquee-track" id="bentoMarqueeTrack">
+          <span>Moment Berharga</span><span class="dot">★</span>
+          <span>Memories</span><span class="dot">★</span>
+          <span>Bersama Kamu</span><span class="dot">★</span>
+          <span>Kenangan Indah</span><span class="dot">★</span>
+          <span>Moment Berharga</span><span class="dot">★</span>
+          <span>Memories</span><span class="dot">★</span>
+          <span>Bersama Kamu</span><span class="dot">★</span>
+          <span>Kenangan Indah</span><span class="dot">★</span>
+          <span>Moment Berharga</span><span class="dot">★</span>
+          <span>Memories</span><span class="dot">★</span>
+          <span>Bersama Kamu</span><span class="dot">★</span>
+          <span>Kenangan Indah</span><span class="dot">★</span>
+        </div>
+      </div>
+
+      <!-- Row 1: Big left + 2 stacked right -->
+      <div class="bento-grid">
+        <div class="bento-cell tall h-lg" id="bc1">
+          <img src="assets/annissa/nica 1.png" alt="Nica" onerror="this.style.opacity='0'">
+        </div>
+        <div class="bento-cell h-md" id="bc2">
+          <img src="assets/annissa/nica 3.png" alt="Nica" onerror="this.style.opacity='0'">
+        </div>
+        <div class="bento-cell h-md" id="bc3">
+          <img src="assets/annissa/nica 6.png" alt="Nica" onerror="this.style.opacity='0'">
+        </div>
+      </div>
+
+      <!-- Row 2: 3 equal cells -->
+      <div class="bento-row2">
+        <div class="bento-cell" id="bc4">
+          <img src="assets/annissa/nica 9.png" alt="Nica" onerror="this.style.opacity='0'">
+        </div>
+        <div class="bento-cell" id="bc5">
+          <img src="assets/annissa/nica 12.png" alt="Nica" onerror="this.style.opacity='0'">
+        </div>
+        <div class="bento-cell" id="bc6">
+          <img src="assets/annissa/nica 13.png" alt="Nica" onerror="this.style.opacity='0'">
+        </div>
+      </div>
+
+      <!-- Row 3: Wide left + narrow right -->
+      <div class="bento-grid" style="grid-template-columns:1fr 2fr; margin-top:10px;">
+        <div class="bento-cell h-md" id="bc7">
+          <img src="assets/annissa/nica 4.png" alt="Nica" onerror="this.style.opacity='0'">
+        </div>
+        <div class="bento-cell tall h-lg" id="bc8">
+          <img src="assets/annissa/nica 7.png" alt="Nica" onerror="this.style.opacity='0'">
+        </div>
+        <div class="bento-cell h-md" id="bc9">
+          <img src="assets/annissa/nica 2.png" alt="Nica" onerror="this.style.opacity='0'">
         </div>
       </div>
     </section>
@@ -1742,6 +1905,26 @@ function initScrollEngine(){
         const capP = clamp((p - 0.4) / 0.4, 0, 1); // starts at p=0.4
         caption.style.opacity   = capP;
         caption.style.transform = `translateY(${(1-capP)*30}px)`;
+      }
+    }
+
+    // ── BENTO GRID staggered reveal ──
+    const bentoSection = document.getElementById('bentoSection');
+    if(bentoSection){
+      const bentoRect = bentoSection.getBoundingClientRect();
+      const bentoVisible = bentoRect.top < vh * 0.9;
+      if(bentoVisible){
+        // Reveal each cell with a staggered delay based on its index
+        for(let b=1; b<=9; b++){
+          const cell = document.getElementById('bc'+b);
+          if(!cell) continue;
+          const cellRect = cell.getBoundingClientRect();
+          const cellP = clamp(1 - cellRect.top / (vh * 0.88), 0, 1);
+          // Eased progress
+          const eased = cellP < 0.5 ? 2*cellP*cellP : -1+(4-2*cellP)*cellP;
+          cell.style.opacity   = eased;
+          cell.style.transform = `translateY(${(1-eased)*40}px) scale(${0.96 + eased*0.04})`;
+        }
       }
     }
 
