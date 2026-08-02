@@ -552,9 +552,6 @@
   <!-- 1 Background Tunggal -->
   <div class="bg-layer" id="bgLayer1"></div>
 
-  <!-- Background music jalanpulang -->
-  <audio id="bgMusic" src="audio/jalanpulang.mp3" loop preload="auto"></audio>
-
   <!-- Star canvas overlay -->
   <canvas id="spaceCanvas"></canvas>
 
@@ -736,6 +733,49 @@ const vAudios = friendsList.map(f => {
   a.preload = "auto";
   return a;
 });
+
+// ── AUDIO ANALYSIS & FIREWORKS GLOBALS ──
+let audioCtx = null;
+let analyser = null;
+let source = null;
+let dataArray = null;
+let activeFireworks = [];
+
+function setupAudioAnalysis() {
+  if (audioCtx) return;
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContextClass();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    source = audioCtx.createMediaElementSource(bgMusic);
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+  } catch (e) {
+    console.warn("AudioContext setup failed:", e);
+  }
+}
+
+function spawnFirework(x, y) {
+  const particleCount = 45 + Math.floor(Math.random() * 25);
+  const hue = Math.floor(Math.random() * 360);
+  const color = `hsl(${hue}, 100%, 75%)`;
+  const particles = [];
+  for (let i = 0; i < particleCount; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 0.8 + Math.random() * 4.2;
+    particles.push({
+      x: x,
+      y: y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      alpha: 1,
+      decay: 0.012 + Math.random() * 0.015
+    });
+  }
+  activeFireworks.push({ particles, color });
+}
 
 
 
@@ -1075,17 +1115,20 @@ function showBirthday(){
   document.body.style.overflow="auto";
   document.body.style.height="auto";
   document.body.style.touchAction="auto";
-  // Putar lagu jalanpulang secara loop
-  const bgMusic = document.getElementById("bgMusic");
-  if(bgMusic){
-    bgMusic.volume = 0.5;
-    const tryPlay = () => bgMusic.play().catch(()=>{});
-    tryPlay();
-    // Fallback untuk mobile yang blokir autoplay
-    ['click','touchstart','touchend'].forEach(ev => {
-      document.addEventListener(ev, tryPlay, {once:true});
-    });
-  }
+  
+  bgMusic.volume = 0.25;
+  const tryPlay = () => {
+    setupAudioAnalysis();
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    bgMusic.play().catch(()=>{});
+  };
+  tryPlay();
+  // Fallback untuk mobile yang blokir autoplay
+  ['click','touchstart','touchend'].forEach(ev => {
+    document.addEventListener(ev, tryPlay, {once:true});
+  });
   initBirthday();
 }
 
@@ -1495,6 +1538,52 @@ function initSpaceCanvas(){
       cx.fillStyle=`rgba(255,220,230,${m.life*.9})`;
       cx.beginPath(); cx.arc(m.x,m.y,1.5*m.life,0,6.28); cx.fill();
       cx.restore();
+    }
+
+    // ── AUDIO SYNC FIREWORKS ──
+    if (analyser && dataArray) {
+      analyser.getByteFrequencyData(dataArray);
+      let bassSum = 0;
+      const bassBins = 8;
+      for (let i = 0; i < bassBins; i++) {
+        bassSum += dataArray[i];
+      }
+      const bassAvg = bassSum / bassBins;
+      
+      // Trigger firework on bass drum / beat climax!
+      if (bassAvg > 195 && Math.random() < 0.07) {
+        spawnFirework(
+          50 + Math.random() * (cv.width - 100), 
+          50 + Math.random() * (cv.height * 0.55)
+        );
+      }
+    }
+
+    // Update and Draw Fireworks
+    for (let fIdx = activeFireworks.length - 1; fIdx >= 0; fIdx--) {
+      const fw = activeFireworks[fIdx];
+      let alive = false;
+      fw.particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.045; // gravity
+        p.alpha -= p.decay;
+        if (p.alpha > 0) {
+          alive = true;
+          cx.save();
+          cx.globalAlpha = p.alpha;
+          cx.fillStyle = fw.color;
+          cx.shadowBlur = 6;
+          cx.shadowColor = fw.color;
+          cx.beginPath();
+          cx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+          cx.fill();
+          cx.restore();
+        }
+      });
+      if (!alive) {
+        activeFireworks.splice(fIdx, 1);
+      }
     }
 
     requestAnimationFrame(loop);
