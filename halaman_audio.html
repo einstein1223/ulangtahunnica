@@ -579,18 +579,20 @@ dots2.classList.add("show");
 // Auto-unlock on ANY touch/click — no blocking overlay needed
 function ensureUnlocked(cb) {
   if (audioUnlocked) { if(cb) cb(); return; }
-  // Attempt silent unlock
-  const a = new Audio();
-  a.src = friendsList[0].audio;
-  a.volume = 0;
-  a.play().then(() => {
-    a.pause(); a.src = "";
-    audioUnlocked = true;
-    if (cb) cb();
-  }).catch(() => {
-    audioUnlocked = true; // Mark as attempted
-    if (cb) cb();
+  
+  // Play and immediately pause all audios to unlock them for mobile browser policy
+  vAudios.forEach(a => {
+    if (a) {
+      a.play().then(() => {
+        a.pause();
+      }).catch(err => {
+        console.warn("Silent unlock failed for:", a.src, err);
+      });
+    }
   });
+
+  audioUnlocked = true;
+  if (cb) cb();
 }
 
 // On first any interaction unlock audio

@@ -712,8 +712,52 @@
 
 <script>
 // ════════════════════════════════════════════════════════════════
-// CANVAS RESIZE & MOBILE DETECTION
+// AUDIO SYSTEM GLOBALS & PRE-LOAD (Crucial for mobile browsers)
 // ════════════════════════════════════════════════════════════════
+const friendsList=[
+  {name:"Rani",audio:"audio/rani.ogg"},{name:"Manda",audio:"audio/manda.ogg"},
+  {name:"Resta",audio:"audio/restavia.ogg"},{name:"Dewi",audio:"audio/dewi.ogg"},
+  {name:"Nanda",audio:"audio/nanda.ogg"},{name:"Destia",audio:"audio/destia.ogg"},
+  {name:"Dave",audio:"audio/dave.ogg"},{name:"Aurel",audio:"audio/aurel.m4a"},
+  {name:"Ayu",audio:"audio/ayu.m4a"},{name:"Eca",audio:"audio/eca.opus"},
+  {name:"Ferin",audio:"audio/ferin.m4a"},{name:"Andhin",audio:"audio/andhin.m4a"},
+  {name:"Sem",audio:"audio/sem.m4a"},{name:"Duta",audio:"audio/duta.mpeg"}
+];
+const bgMusic = new Audio("audio/jalanpulang.mp3");
+bgMusic.loop = true;
+bgMusic.volume = 0.25;
+
+const kuisSound = new Audio("audio/jokowi.mp3");
+kuisSound.volume = 0.8;
+
+const vAudios = friendsList.map(f => {
+  const a = new Audio(f.audio);
+  a.preload = "auto";
+  return a;
+});
+
+let audioUnlockedGlobal = false;
+function unlockAllAudios() {
+  if (audioUnlockedGlobal) return;
+  const audios = [bgMusic, kuisSound, ...vAudios];
+  audios.forEach(a => {
+    if (a) {
+      a.play().then(() => {
+        a.pause();
+        a.currentTime = 0;
+      }).catch(err => {
+        console.warn("Failed to unlock: " + a.src, err);
+      });
+    }
+  });
+  audioUnlockedGlobal = true;
+}
+
+// On first interaction anywhere, unlock all audios
+['touchstart', 'pointerdown', 'mousedown', 'click'].forEach(ev => {
+  document.addEventListener(ev, unlockAllAudios, {once: true, passive: true});
+});
+
 const GAME_W = 800, GAME_H = 600;
 const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
@@ -862,7 +906,7 @@ const pohonImg   = loadImg("assets/palm.png");
 const spikesImg  = loadImg("assets/spikes.png");
 const coinImg    = loadImg("assets/coin.png");
 
-const kuisSound=new Audio("audio/jokowi.mp3");kuisSound.volume=0.8;
+
 const waterFrames=[loadImg("assets/1.png"),loadImg("assets/2.png"),loadImg("assets/3.png"),loadImg("assets/4.png")];
 
 const playerAnims={
@@ -1376,27 +1420,12 @@ function gameLoop(){
 // ════════════════════════════════════════════════════════════════
 // BIRTHDAY — PARALLAX SPACE BACKGROUND & VINYL
 // ════════════════════════════════════════════════════════════════
-const bgMusic = new Audio("audio/jalanpulang.mp3");
-bgMusic.loop = true;
-bgMusic.volume = 0.25;
-
-const friendsList=[
-  {name:"Rani",audio:"audio/rani.ogg"},{name:"Manda",audio:"audio/manda.ogg"},
-  {name:"Resta",audio:"audio/restavia.ogg"},{name:"Dewi",audio:"audio/dewi.ogg"},
-  {name:"Nanda",audio:"audio/nanda.ogg"},{name:"Destia",audio:"audio/destia.ogg"},
-  {name:"Dave",audio:"audio/dave.ogg"},{name:"Aurel",audio:"audio/aurel.m4a"},
-  {name:"Ayu",audio:"audio/ayu.m4a"},{name:"Eca",audio:"audio/eca.opus"},
-  {name:"Ferin",audio:"audio/ferin.m4a"},{name:"Andhin",audio:"audio/andhin.m4a"},
-  {name:"Sem",audio:"audio/sem.m4a"},{name:"Duta",audio:"audio/duta.mpeg"}
-];
-
-let vAudios=[],currentTrackIdx=0,isPlaying=false,progressInterval=null;
+let currentTrackIdx=0,isPlaying=false,progressInterval=null;
 
 function initBirthday(){
   bgMusic.play().catch(()=>{});
   const ma2=document.getElementById("vma"),dots2=document.getElementById("vdots");
   ma2.innerHTML=""; dots2.innerHTML="";
-  vAudios=friendsList.map(f=>{const a=new Audio(f.audio);a.preload="auto";return a;});
   friendsList.forEach((f,i)=>{
     const d=document.createElement("div");d.className="vmsg";d.id="vm"+i;
     d.innerHTML=`<div class="vmsg-name">${f.name}</div><div class="vmsg-line"></div><div class="vmsg-tag">MENGIRIM CINTA UNTUKMU</div>`;
