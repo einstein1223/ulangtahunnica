@@ -2,208 +2,355 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#12050f">
   <title>Pesan untuk Nica 🎵</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
     html, body { height: 100%; }
     body {
-      background: #12050f;
-      font-family: 'Space Mono', monospace;
+      font-family: 'Outfit', sans-serif;
       color: #ffe6f0;
       min-height: 100vh;
       overflow-x: hidden;
+      /* Background utama: bghalaman.png */
+      background-color: #12050f;
+      background-image: url('assets/bghalaman.png');
+      background-size: cover;
+      background-position: center top;
+      background-attachment: fixed;
     }
 
-    /* PARALLAX SPACE CANVAS */
-    #spaceCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    /* DARK OVERLAY agar teks lebih terbaca di atas background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(10, 2, 12, 0.55) 0%,
+        rgba(18, 5, 15, 0.45) 50%,
+        rgba(10, 2, 12, 0.70) 100%
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
 
-    /* NEBULA LAYERS */
-    .neb { position: fixed; border-radius: 50%; pointer-events: none; filter: blur(90px); opacity: .1; }
+    /* UNLOCK OVERLAY — tampil di HP agar audio bisa diputar */
+    #unlockOverlay {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(10, 2, 14, 0.92);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 32px;
+      gap: 24px;
+    }
+    #unlockOverlay.hidden { display: none; }
+    #unlockOverlay .unlock-emoji { font-size: 56px; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+    #unlockOverlay h2 {
+      font-family: 'Space Mono', monospace; font-weight: 700;
+      font-size: clamp(20px, 5vw, 28px); color: #ff85c0;
+      letter-spacing: .1em; text-transform: uppercase;
+      text-shadow: 0 0 30px rgba(255,105,180,.7);
+    }
+    #unlockOverlay p {
+      font-size: clamp(14px, 3.5vw, 16px); color: rgba(255,215,230,.8);
+      line-height: 1.7; letter-spacing: .03em;
+    }
+    #unlockBtn {
+      background: linear-gradient(135deg, #ff69b4, #ff1493);
+      color: #fff; border: none;
+      padding: clamp(14px, 4vw, 18px) clamp(36px, 10vw, 56px);
+      font-size: clamp(14px, 3.5vw, 16px); font-weight: 700;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: .15em; text-transform: uppercase;
+      border-radius: 50px; cursor: pointer;
+      box-shadow: 0 6px 30px rgba(255,20,147,.5);
+      transition: transform .3s, box-shadow .3s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #unlockBtn:active { transform: scale(0.96); }
 
-    .page-wrap { position: relative; z-index: 1; min-height: 100vh; }
+    /* MAIN PAGE */
+    .page-wrap {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center;
+    }
 
-    /* HEADER */
+    /* ── HEADER ── */
     .p-header {
-      text-align: center; padding: clamp(40px,8vw,80px) 24px clamp(20px,4vw,40px);
-      position: relative;
+      text-align: center;
+      padding: clamp(36px, 8vw, 80px) 20px clamp(16px, 4vw, 32px);
+      width: 100%;
     }
     .p-header .tag {
-      font-size: 11px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase;
-      color: rgba(255,182,193,.6); margin-bottom: 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(10px, 2.5vw, 12px); font-weight: 700;
+      letter-spacing: .3em; text-transform: uppercase;
+      color: rgba(255,182,193,.7); margin-bottom: 12px;
     }
     .p-header h1 {
       font-family: 'Space Mono', monospace; font-weight: 700;
-      font-size: clamp(24px, 6vw, 56px); color: #ff85c0;
-      letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px;
-      text-shadow: 0 0 40px rgba(255,105,180,.6);
+      font-size: clamp(28px, 7vw, 60px);
+      color: #fff;
+      letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 12px;
+      text-shadow: 0 0 40px rgba(255,105,180,.8), 0 2px 0 rgba(0,0,0,.5);
     }
     .p-header .sub {
-      font-size: clamp(11px, 1.8vw, 14px); color: rgba(255,215,230,.7);
-      letter-spacing: .15em; text-transform: uppercase; line-height: 2;
+      font-size: clamp(13px, 3vw, 16px);
+      color: rgba(255,230,240,.9);
+      letter-spacing: .06em; line-height: 1.8;
+      text-shadow: 0 1px 4px rgba(0,0,0,.6);
     }
     .div-line {
-      width: 50px; height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255,105,180,.7), transparent);
-      margin: 24px auto;
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,105,180,.8), transparent);
+      margin: 20px auto 0;
     }
 
-    /* VINYL PLAYER CENTER SECTION */
+    /* ── VINYL SECTION ── */
     .vinyl-section {
       display: flex; flex-direction: column; align-items: center;
-      justify-content: center; padding: 40px 24px 60px;
+      padding: 24px 20px 32px; width: 100%;
     }
 
     /* RECORD */
     .vc {
-      position: relative; width: clamp(220px, 50vw, 280px); height: clamp(220px, 50vw, 280px);
-      cursor: pointer; margin-bottom: 12px;
+      position: relative;
+      width: clamp(180px, 50vw, 260px);
+      height: clamp(180px, 50vw, 260px);
+      cursor: pointer; margin-bottom: 8px;
+      -webkit-tap-highlight-color: transparent;
     }
     .vdisc {
       width: 100%; height: 100%; border-radius: 50%;
       background:
         radial-gradient(circle at 50% 50%, #1a0815 0%, #1a0815 18%, transparent 18.5%),
-        repeating-radial-gradient(circle at 50%,transparent 18.5%,transparent 19%,rgba(120,30,80,.5) 19.2%,transparent 19.4%),
+        repeating-radial-gradient(circle at 50%, transparent 18.5%, transparent 19%, rgba(120,30,80,.5) 19.2%, transparent 19.4%),
         radial-gradient(circle, #20081a 0%, #280a22 60%, #140412 100%);
-      border: 2px solid rgba(255,105,180,.3);
-      box-shadow: 0 15px 40px rgba(0,0,0,.8), 0 0 25px rgba(255,105,180,.2);
-      transition: transform .3s;
+      border: 2px solid rgba(255,105,180,.35);
+      box-shadow: 0 10px 40px rgba(0,0,0,.8), 0 0 30px rgba(255,105,180,.25);
+      transition: box-shadow .3s;
     }
-    .vdisc:hover { transform: scale(1.02); }
     .vdisc.spin { animation: vspin 2.5s linear infinite; }
     @keyframes vspin { to { transform: rotate(360deg); } }
 
     .vlabel {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-      width: clamp(65px, 14vw, 85px); height: clamp(65px, 14vw, 85px); border-radius: 50%;
+      width: clamp(60px, 16vw, 85px); height: clamp(60px, 16vw, 85px);
+      border-radius: 50%;
       background: linear-gradient(145deg, #ff69b4, #c71585);
-      display: flex; align-items: center; justify-content: center; pointer-events: none;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
       box-shadow: 0 0 25px rgba(255,105,180,.7);
     }
     .vlabel span {
-      font-family: 'Space Mono', monospace; font-size: clamp(7px, 2vw, 10px); font-weight: 700;
-      color: #fff; text-align: center; line-height: 1.3; letter-spacing: .05em; text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(7px, 2vw, 10px); font-weight: 700;
+      color: #fff; text-align: center; line-height: 1.3;
+      letter-spacing: .05em; text-transform: uppercase;
     }
-    .vhole { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 12px; height: 12px; border-radius: 50%; background: #12050f; z-index: 2; }
+    .vhole {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 12px; height: 12px; border-radius: 50%; background: #12050f; z-index: 2;
+    }
 
     /* TONEARM */
     .varm {
-      position: absolute; top: -10px; right: -45px; width: 110px; height: 140px;
-      transform-origin: 90px 16px; transition: transform 1.5s cubic-bezier(.33,1,.68,1);
+      position: absolute; top: -10px; right: -40px; width: 105px; height: 135px;
+      transform-origin: 88px 15px; transition: transform 1.5s cubic-bezier(.33,1,.68,1);
       transform: rotate(-32deg);
     }
     .varm.on { transform: rotate(-4deg); }
-    .varm-base { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: #ff69b4; box-shadow: 0 0 10px #ff69b4; }
-    .varm-rod { position: absolute; top: 13px; right: 12px; width: 3px; height: 115px; background: linear-gradient(to bottom, #ff69b4, #8b0042); border-radius: 2px; transform-origin: top; transform: rotate(8deg); }
+    .varm-base { position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; border-radius: 50%; background: #ff69b4; box-shadow: 0 0 10px #ff69b4; }
+    .varm-rod { position: absolute; top: 12px; right: 11px; width: 3px; height: 112px; background: linear-gradient(to bottom, #ff69b4, #8b0042); border-radius: 2px; transform-origin: top; transform: rotate(8deg); }
     .varm-tip { position: absolute; bottom: -2px; left: -4px; width: 10px; height: 14px; background: #ff1493; border-radius: 2px; }
 
-    /* INFO / CONTROLS */
+    /* INFO BAR */
     .vhint {
-      font-size: 12px; font-weight: 700; color: rgba(255,182,193,.7);
-      letter-spacing: .15em; text-transform: uppercase; margin-top: 20px;
-      transition: opacity .6s; font-family: 'Space Mono', monospace; text-align: center;
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(11px, 3vw, 13px); font-weight: 700;
+      color: rgba(255,182,193,.85); letter-spacing: .12em;
+      text-transform: uppercase; margin-top: 18px;
+      transition: opacity .6s; text-align: center;
+      text-shadow: 0 1px 6px rgba(0,0,0,.7);
     }
-    .vhint.gone { opacity: 0; pointer-events: none; }
+    .vhint.gone { opacity: 0; pointer-events: none; height: 0; margin: 0; overflow: hidden; }
 
     .vtinfo {
-      font-size: 13px; font-weight: 700; color: #ff85c0; letter-spacing: .1em;
-      text-align: center; opacity: 0; transition: opacity .5s; margin-top: 14px;
-      font-family: 'Space Mono', monospace; text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(12px, 3vw, 15px); font-weight: 700;
+      color: #ff85c0; letter-spacing: .08em; text-align: center;
+      opacity: 0; transition: opacity .5s; margin-top: 12px;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px rgba(255,105,180,.6), 0 1px 4px rgba(0,0,0,.6);
     }
     .vtinfo.show { opacity: 1; }
 
+    /* PROGRESS BAR */
     .vtw {
-      margin-top: 10px; width: min(340px, 82vw); height: 4px;
-      background: rgba(255,105,180,.12); border-radius: 2px; overflow: hidden;
+      margin-top: 10px; width: min(340px, 85vw); height: 5px;
+      background: rgba(255,105,180,.15); border-radius: 3px; overflow: hidden;
       opacity: 0; transition: opacity .5s;
     }
     .vtw.show { opacity: 1; }
-    .vtb { width: 0%; height: 100%; background: linear-gradient(90deg, #ff69b4, #ff1493); transition: width .4s linear; }
+    .vtb { width: 0%; height: 100%; background: linear-gradient(90deg, #ff69b4, #ff1493); transition: width .4s linear; border-radius: 3px; }
 
-    .vcontrols { margin-top: 16px; display: flex; align-items: center; gap: 12px; opacity: 0; transition: opacity .5s; flex-wrap: wrap; justify-content: center; }
+    /* CONTROLS */
+    .vcontrols {
+      margin-top: 14px; display: flex; align-items: center;
+      gap: clamp(8px, 2vw, 14px); opacity: 0; transition: opacity .5s;
+      flex-wrap: wrap; justify-content: center;
+    }
     .vcontrols.show { opacity: 1; }
     .vbtn {
-      background: rgba(255,105,180,.15); border: 1px solid rgba(255,105,180,.4);
-      color: #ff85c0; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
-      padding: 10px 18px; border-radius: 24px; cursor: pointer; transition: all .3s ease;
-      -webkit-tap-highlight-color: transparent; touch-action: manipulation; letter-spacing: .1em;
+      background: rgba(255,105,180,.18); border: 1.5px solid rgba(255,105,180,.5);
+      color: #fff; font-family: 'Space Mono', monospace;
+      font-size: clamp(11px, 3vw, 13px); font-weight: 700;
+      padding: clamp(10px, 3vw, 13px) clamp(16px, 4vw, 22px);
+      border-radius: 50px; cursor: pointer; transition: all .3s ease;
+      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+      letter-spacing: .1em; text-shadow: 0 1px 3px rgba(0,0,0,.5);
     }
-    .vbtn:hover, .vbtn:active { background: #ff69b4; color: #12050f; box-shadow: 0 0 18px rgba(255,105,180,.7); }
+    .vbtn:hover, .vbtn:active {
+      background: #ff69b4; color: #12050f;
+      box-shadow: 0 0 20px rgba(255,105,180,.7);
+      border-color: #ff69b4; text-shadow: none;
+    }
 
-    /* SONG LIST */
-    .vdots { margin-top: 20px; display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; max-width: 340px; }
-    .vdot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,105,180,.15); border: 1.5px solid rgba(255,105,180,.35); transition: all .5s; cursor: pointer; }
-    .vdot.past { background: rgba(255,105,180,.45); }
-    .vdot.now { background: #ff69b4; width: 22px; border-radius: 4px; box-shadow: 0 0 10px rgba(255,105,180,.8); }
-
-    /* MESSAGE AREA */
-    .vma { margin-top: 28px; width: min(500px, 90vw); min-height: 120px; position: relative; }
+    /* NOW PLAYING NAME */
+    .vma { margin-top: 22px; width: min(500px, 92vw); min-height: 100px; position: relative; }
     .vmsg {
       position: absolute; inset: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; text-align: center; padding: 20px;
+      align-items: center; justify-content: center; text-align: center; padding: 16px;
       opacity: 0; transform: translateY(8px); transition: opacity .8s, transform .8s;
       pointer-events: none;
     }
     .vmsg.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    .vmsg-name { font-family: 'Space Mono', monospace; font-weight: 700; font-size: clamp(22px, 6vw, 36px); color: #ff85c0; letter-spacing: .1em; text-transform: uppercase; text-shadow: 0 0 20px rgba(255,105,180,.6); }
-    .vmsg-line { width: 36px; height: 2px; background: rgba(255,105,180,.4); margin: 14px 0; }
-    .vmsg-tag { font-size: clamp(10px, 2.5vw, 12px); color: rgba(255,215,230,.7); letter-spacing: .2em; text-transform: uppercase; font-family: 'Space Mono', monospace; }
+    .vmsg-name {
+      font-family: 'Space Mono', monospace; font-weight: 700;
+      font-size: clamp(24px, 7vw, 40px); color: #fff;
+      letter-spacing: .1em; text-transform: uppercase;
+      text-shadow: 0 0 25px rgba(255,105,180,.7), 0 2px 6px rgba(0,0,0,.7);
+    }
+    .vmsg-line { width: 36px; height: 2px; background: rgba(255,105,180,.5); margin: 12px 0; }
+    .vmsg-tag {
+      font-size: clamp(11px, 3vw, 13px); color: rgba(255,230,240,.85);
+      letter-spacing: .15em; text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+      text-shadow: 0 1px 4px rgba(0,0,0,.6);
+    }
 
-    /* FRIENDS GRID */
-    .friends-section { padding: 40px 24px 80px; text-align: center; }
+    /* DOT INDICATORS */
+    .vdots {
+      margin-top: 16px; display: flex; gap: 8px; align-items: center;
+      justify-content: center; flex-wrap: wrap; max-width: min(340px, 90vw);
+    }
+    .vdot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,105,180,.2); border: 1.5px solid rgba(255,105,180,.4);
+      transition: all .5s; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .vdot.past { background: rgba(255,105,180,.5); }
+    .vdot.now { background: #ff69b4; width: 24px; border-radius: 4px; box-shadow: 0 0 12px rgba(255,105,180,.9); }
+
+    /* ── FRIENDS GRID ── */
+    .friends-section {
+      padding: clamp(20px, 5vw, 40px) 20px clamp(40px, 10vw, 80px);
+      text-align: center; width: 100%; max-width: 800px;
+    }
     .friends-section h2 {
-      font-family: 'Space Mono', monospace; font-size: clamp(14px, 2.5vw, 18px); font-weight: 700;
-      color: #ff85c0; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 32px;
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(15px, 3.5vw, 20px); font-weight: 700;
+      color: #fff; letter-spacing: .2em; text-transform: uppercase;
+      margin-bottom: 24px;
+      text-shadow: 0 0 20px rgba(255,105,180,.6), 0 2px 6px rgba(0,0,0,.6);
     }
     .friends-grid {
-      display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
-      max-width: 700px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(clamp(100px, 28vw, 150px), 1fr));
+      gap: clamp(10px, 2.5vw, 14px);
+      max-width: 680px; margin: 0 auto;
     }
     .friend-chip {
-      background: rgba(28,7,24,.8); border: 1.5px solid rgba(255,105,180,.3);
-      border-radius: 50px; padding: 10px 20px; cursor: pointer;
-      font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700;
-      letter-spacing: .12em; text-transform: uppercase; color: rgba(255,215,230,.85);
-      transition: all .35s cubic-bezier(.175,.885,.32,1.275);
-      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+      background: rgba(20, 5, 20, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(255,105,180,.35);
+      border-radius: 16px;
+      padding: clamp(12px, 3.5vw, 16px) 10px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(13px, 3.5vw, 16px); font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: rgba(255,230,240,.9);
+      transition: all .3s cubic-bezier(.175,.885,.32,1.275);
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      text-align: center;
+      text-shadow: 0 1px 4px rgba(0,0,0,.5);
+      box-shadow: 0 4px 16px rgba(0,0,0,.4);
+      /* Ukuran tap area yang nyaman di HP */
+      min-height: clamp(50px, 12vw, 64px);
+      display: flex; align-items: center; justify-content: center;
     }
-    .friend-chip:hover, .friend-chip:active {
-      background: #ff69b4; color: #12050f; border-color: #ff69b4;
-      transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 24px rgba(255,105,180,.6);
+    .friend-chip:active {
+      background: rgba(255,105,180,.35);
+      transform: scale(0.96);
     }
-    .friend-chip.playing { background: #ff1493; color: #fff; border-color: #ff1493; box-shadow: 0 0 20px rgba(255,20,147,.5); }
+    .friend-chip.playing {
+      background: linear-gradient(135deg, rgba(255,20,147,.5), rgba(255,105,180,.35));
+      color: #fff; border-color: #ff69b4;
+      box-shadow: 0 0 20px rgba(255,20,147,.5), 0 4px 16px rgba(0,0,0,.4);
+    }
 
-    /* FOOTER */
-    .footer { text-align: center; padding: 40px 24px; }
-    .footer p { font-size: 11px; color: rgba(255,182,193,.4); letter-spacing: .2em; text-transform: uppercase; line-height: 2; }
-    .footer a { color: rgba(255,105,180,.6); text-decoration: none; }
-    .footer a:hover { color: #ff69b4; }
+    /* ── FOOTER ── */
+    .footer { text-align: center; padding: clamp(24px, 6vw, 48px) 20px; width: 100%; }
+    .footer p {
+      font-size: clamp(12px, 3vw, 14px); color: rgba(255,182,193,.6);
+      letter-spacing: .15em; text-transform: uppercase; line-height: 2;
+      text-shadow: 0 1px 4px rgba(0,0,0,.5);
+    }
+    .footer a {
+      color: rgba(255,150,200,.8); text-decoration: none;
+      padding: 10px 20px; display: inline-block;
+      border: 1px solid rgba(255,105,180,.3); border-radius: 50px;
+      margin-top: 12px; transition: all .3s;
+      font-weight: 700;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .footer a:active { background: rgba(255,105,180,.2); }
   </style>
 </head>
 <body>
 
-<!-- SPACE PARALLAX BACKGROUND -->
-<canvas id="spaceCanvas"></canvas>
-
-<!-- NEBULA LAYERS -->
-<div class="neb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(255,51,133,.25),transparent);top:-100px;left:-200px"></div>
-<div class="neb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(138,43,226,.2),transparent);top:40%;right:-150px"></div>
-<div class="neb" style="width:700px;height:700px;background:radial-gradient(circle,rgba(255,105,180,.15),transparent);bottom:-100px;left:10%"></div>
+<!-- UNLOCK OVERLAY (untuk HP agar audio bisa diputar) -->
+<div id="unlockOverlay">
+  <div class="unlock-emoji">🎵</div>
+  <h2>Pesan untuk Nica</h2>
+  <p>Ketuk tombol di bawah untuk mulai<br>mendengarkan pesan dari teman-temanmu!</p>
+  <button id="unlockBtn" onclick="unlockAudio()">🎶 BUKA PESAN</button>
+</div>
 
 <div class="page-wrap">
   <!-- HEADER -->
   <div class="p-header">
-    <div class="tag">A BIRTHDAY COSMIC JOURNEY</div>
+    <div class="tag">🎂 A BIRTHDAY COSMIC JOURNEY</div>
     <h1>PESAN UNTUK NICA</h1>
-    <p class="sub">14 suara penuh cinta untukmu.<br>Ketuk piringan hitam, dengarkan pesannya.</p>
+    <p class="sub">{{ friendsList.length }} suara penuh cinta untukmu ✨<br>Ketuk nama teman untuk mendengarkan pesannya.</p>
     <div class="div-line"></div>
   </div>
 
-  <!-- VINYL -->
+  <!-- VINYL PLAYER -->
   <div class="vinyl-section">
-    <div class="vc" onclick="toggleV()">
+    <div class="vc" id="vinylContainer" onclick="toggleV()">
       <div class="vdisc" id="vdisc"></div>
       <div class="vlabel"><span>HAPPY<br>BIRTHDAY<br>NICA</span></div>
       <div class="vhole"></div>
@@ -212,169 +359,227 @@
         <div class="varm-rod"><div class="varm-tip"></div></div>
       </div>
     </div>
-    <div class="vhint" id="vhint">KETUK PIRINGAN UNTUK MEMUTAR</div>
+
+    <div class="vhint" id="vhint">KETUK NAMA TEMAN DI BAWAH ↓</div>
     <div class="vtinfo" id="vtinfo"></div>
     <div class="vtw" id="vtw"><div class="vtb" id="vtb"></div></div>
+
     <div class="vcontrols" id="vcontrols">
-      <button class="vbtn" onclick="vPrev(event)">◄ PREV</button>
-      <button class="vbtn" onclick="toggleV(event)">⏸ PLAY/PAUSE</button>
-      <button class="vbtn" onclick="vNext(event)">NEXT ►</button>
+      <button class="vbtn" id="btnPrev" onclick="vPrev(event)">◄ PREV</button>
+      <button class="vbtn" id="btnPlayPause" onclick="toggleV(event)">⏸ PAUSE</button>
+      <button class="vbtn" id="btnNext" onclick="vNext(event)">NEXT ►</button>
     </div>
+
     <div class="vma" id="vma"></div>
     <div class="vdots" id="vdots"></div>
   </div>
 
   <!-- FRIENDS GRID -->
   <div class="friends-section">
-    <h2>PILIH PESAN</h2>
+    <h2>🎤 PILIH PESAN TEMANMU</h2>
     <div class="friends-grid" id="friendsGrid"></div>
   </div>
 
   <div class="footer">
-    <p>dibuat dengan 💖 untukmu, nica<br><a href="index.html">← KEMBALI KE PETUALANGAN</a></p>
+    <p>dibuat dengan 💖 untukmu, nica</p>
+    <a href="index.html">← KEMBALI KE PETUALANGAN</a>
   </div>
 </div>
 
 <script>
-// ─── SPACE PARALLAX ───
-(function(){
-  const cv = document.getElementById("spaceCanvas");
-  const cx = cv.getContext("2d");
-  function resize(){ cv.width=innerWidth; cv.height=innerHeight; }
-  resize(); addEventListener("resize", resize);
-
-  const layers = [
-    Array.from({length:80},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*.8+.1,a:Math.random()*.2+.05,p:Math.random()*6.28,s:Math.random()*.008+.002})),
-    Array.from({length:50},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.2+.3,a:Math.random()*.3+.1,p:Math.random()*6.28,s:Math.random()*.012+.005})),
-    Array.from({length:25},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*2+.8,a:Math.random()*.4+.15,p:Math.random()*6.28,s:Math.random()*.018+.008})),
-  ];
-
-  let meteors=[]; let meteorTimer=0;
-  function spawnMeteor(){
-    meteors.push({x:Math.random()*cv.width*.8,y:Math.random()*cv.height*.3,vx:4+Math.random()*5,vy:2+Math.random()*3,life:1,decay:.012+Math.random()*.01,len:50+Math.random()*80});
-  }
-
-  let scrollOffY=0;
-  addEventListener("scroll",()=>{ scrollOffY=pageYOffset; },{passive:true});
-
-  (function loop(){
-    cx.clearRect(0,0,cv.width,cv.height);
-    layers.forEach((layer,li)=>{
-      const pf=[.04,.08,.15][li];
-      layer.forEach(s=>{
-        s.p+=s.s;
-        const dy = (s.y - scrollOffY*pf + cv.height*10) % cv.height;
-        const a = s.a*(.4+.6*Math.sin(s.p));
-        cx.beginPath(); cx.arc(s.x, dy, s.r, 0, 6.28);
-        cx.fillStyle=`rgba(255,182,193,${a})`; cx.fill();
-      });
-    });
-
-    meteorTimer++;
-    if(meteorTimer>200+Math.random()*150){meteorTimer=0;spawnMeteor();}
-    for(let i=meteors.length-1;i>=0;i--){
-      const m=meteors[i]; m.x+=m.vx; m.y+=m.vy; m.life-=m.decay;
-      if(m.life<=0){meteors.splice(i,1);continue;}
-      const grad=cx.createLinearGradient(m.x,m.y,m.x-m.vx*m.len/6,m.y-m.vy*m.len/6);
-      grad.addColorStop(0,`rgba(255,182,193,${m.life*.7})`);
-      grad.addColorStop(1,'rgba(255,105,180,0)');
-      cx.save(); cx.strokeStyle=grad; cx.lineWidth=1.5;
-      cx.beginPath(); cx.moveTo(m.x,m.y); cx.lineTo(m.x-m.vx*m.len/6,m.y-m.vy*m.len/6); cx.stroke();
-      cx.fillStyle=`rgba(255,220,230,${m.life*.9})`; cx.beginPath(); cx.arc(m.x,m.y,1.5*m.life,0,6.28); cx.fill(); cx.restore();
-    }
-    requestAnimationFrame(loop);
-  })();
-})();
-
-// ─── VINYL ───
-const friendsList=[
-  {name:"Rani",audio:"audio/rani.ogg"},{name:"Manda",audio:"audio/manda.ogg"},
-  {name:"Resta",audio:"audio/restavia.ogg"},{name:"Dewi",audio:"audio/dewi.ogg"},
-  {name:"Nanda",audio:"audio/nanda.ogg"},{name:"Destia",audio:"audio/destia.ogg"},
-  {name:"Dave",audio:"audio/dave.ogg"},{name:"Aurel",audio:"audio/aurel.m4a"},
-  {name:"Ayu",audio:"audio/ayu.m4a"},{name:"Eca",audio:"audio/eca.opus"},
-  {name:"Ferin",audio:"audio/ferin.m4a"},{name:"Andhin",audio:"audio/andhin.m4a"},
-  {name:"Sem",audio:"audio/sem.m4a"},{name:"Duta",audio:"audio/duta.mpeg"}
+const friendsList = [
+  {name:"Rani",    audio:"audio/rani.ogg"},
+  {name:"Manda",   audio:"audio/manda.ogg"},
+  {name:"Resta",   audio:"audio/restavia.ogg"},
+  {name:"Dewi",    audio:"audio/dewi.ogg"},
+  {name:"Nanda",   audio:"audio/nanda.ogg"},
+  {name:"Destia",  audio:"audio/destia.ogg"},
+  {name:"Dave",    audio:"audio/dave.ogg"},
+  {name:"Aurel",   audio:"audio/aurel.m4a"},
+  {name:"Ayu",     audio:"audio/ayu.m4a"},
+  {name:"Eca",     audio:"audio/eca.opus"},
+  {name:"Ferin",   audio:"audio/ferin.m4a"},
+  {name:"Andhin",  audio:"audio/andhin.m4a"},
+  {name:"Sem",     audio:"audio/sem.m4a"},
+  {name:"Duta",    audio:"audio/duta.mpeg"}
 ];
 
-let vAudios=[], currentTrackIdx=0, isPlaying=false, progressInterval=null;
-const ma2=document.getElementById("vma"), dots2=document.getElementById("vdots");
-const grid2=document.getElementById("friendsGrid");
+// Patch jumlah di header
+document.querySelector('.p-header .sub').innerHTML =
+  `${friendsList.length} suara penuh cinta untukmu ✨<br>Ketuk nama teman untuk mendengarkan pesannya.`;
 
-(function init(){
-  vAudios = friendsList.map(f=>{const a=new Audio(f.audio);a.preload="metadata";return a;});
-  friendsList.forEach((f,i)=>{
-    const d=document.createElement("div");d.className="vmsg";d.id="vm"+i;
-    d.innerHTML=`<div class="vmsg-name">${f.name}</div><div class="vmsg-line"></div><div class="vmsg-tag">MENGIRIMKAN CINTA UNTUKMU ✨</div>`;
+let vAudios = [];
+let currentTrackIdx = 0;
+let isPlaying = false;
+let progressInterval = null;
+let audioUnlocked = false;
+
+const ma2   = document.getElementById("vma");
+const dots2 = document.getElementById("vdots");
+const grid2 = document.getElementById("friendsGrid");
+
+// ── INIT DOM ──
+(function buildDOM(){
+  vAudios = friendsList.map(f => {
+    const a = new Audio(f.audio);
+    a.preload = "none"; // hemat data, load saat dipilih
+    return a;
+  });
+
+  friendsList.forEach((f, i) => {
+    // Message placeholder
+    const d = document.createElement("div");
+    d.className = "vmsg"; d.id = "vm" + i;
+    d.innerHTML = `<div class="vmsg-name">${f.name}</div><div class="vmsg-line"></div><div class="vmsg-tag">MENGIRIMKAN CINTA UNTUKMU ✨</div>`;
     ma2.appendChild(d);
 
-    const dot=document.createElement("div");dot.className="vdot";dot.id="vd"+i;
-    dot.onclick=()=>vGoTo(i); dots2.appendChild(dot);
+    // Dot indicator
+    const dot = document.createElement("div");
+    dot.className = "vdot"; dot.id = "vd" + i;
+    dot.onclick = () => vGoTo(i);
+    dots2.appendChild(dot);
 
-    const chip=document.createElement("div");chip.className="friend-chip";chip.id="fc"+i;
-    chip.textContent=f.name; chip.onclick=()=>vGoTo(i); grid2.appendChild(chip);
+    // Friend chip (tombol besar, mobile-friendly)
+    const chip = document.createElement("div");
+    chip.className = "friend-chip"; chip.id = "fc" + i;
+    chip.textContent = f.name;
+    chip.onclick = () => vGoTo(i);
+    grid2.appendChild(chip);
   });
 })();
 
-function stopAllAudios(){
-  vAudios.forEach(a=>{if(a){a.pause();a.currentTime=0;}});
-  if(progressInterval) clearInterval(progressInterval);
+// ── UNLOCK AUDIO (penting di iOS/Android — butuh gesture pertama) ──
+function unlockAudio() {
+  // Putar semua audio sebentar untuk unlock AutoPlay policy browser mobile
+  const silentUnlock = new Audio();
+  silentUnlock.src = friendsList[0].audio;
+  silentUnlock.volume = 0;
+  silentUnlock.play().then(() => {
+    silentUnlock.pause();
+    silentUnlock.src = "";
+  }).catch(() => {});
+
+  audioUnlocked = true;
+  document.getElementById("unlockOverlay").classList.add("hidden");
+
+  // Langsung mulai putar track pertama
+  playTrack(0);
 }
 
-function playTrack(idx){
+// ── STOP ALL ──
+function stopAllAudios() {
+  vAudios.forEach(a => { if (a) { a.pause(); a.currentTime = 0; } });
+  if (progressInterval) clearInterval(progressInterval);
+}
+
+// ── PLAY TRACK ──
+function playTrack(idx) {
   stopAllAudios();
-  currentTrackIdx=idx;
-  const audio=vAudios[idx];
-  const friend=friendsList[idx];
+  currentTrackIdx = idx;
+  const audio  = vAudios[idx];
+  const friend = friendsList[idx];
 
-  document.querySelectorAll(".vmsg").forEach(m=>m.classList.remove("show"));
-  document.querySelectorAll(".vdot").forEach((d,i)=>{d.className="vdot"+(i<idx?" past":i===idx?" now":"");});
-  document.querySelectorAll(".friend-chip").forEach((c,i)=>{c.classList.toggle("playing",i===idx);});
+  // Update UI
+  document.querySelectorAll(".vmsg").forEach(m => m.classList.remove("show"));
+  document.querySelectorAll(".vdot").forEach((d, i) => {
+    d.className = "vdot" + (i < idx ? " past" : i === idx ? " now" : "");
+  });
+  document.querySelectorAll(".friend-chip").forEach((c, i) => {
+    c.classList.toggle("playing", i === idx);
+  });
 
-  const msgEl=document.getElementById("vm"+idx);
-  if(msgEl) msgEl.classList.add("show");
+  const msgEl = document.getElementById("vm" + idx);
+  if (msgEl) msgEl.classList.add("show");
 
-  document.getElementById("vtinfo").innerText="NOW PLAYING: "+friend.name.toUpperCase();
+  document.getElementById("vtinfo").innerText  = "▶ NOW PLAYING — " + friend.name.toUpperCase();
   document.getElementById("vtinfo").classList.add("show");
   document.getElementById("vtw").classList.add("show");
   document.getElementById("vcontrols").classList.add("show");
   document.getElementById("vhint").classList.add("gone");
   document.getElementById("vdisc").classList.add("spin");
   document.getElementById("varm").classList.add("on");
-  isPlaying=true;
+  document.getElementById("btnPlayPause").textContent = "⏸ PAUSE";
+  isPlaying = true;
 
-  const tb=document.getElementById("vtb");
-  tb.style.width="0%";
+  // Progress bar
+  const tb = document.getElementById("vtb");
+  tb.style.width = "0%";
 
-  if(audio){
-    audio.currentTime=0; audio.volume=1;
-    audio.play().catch(()=>{});
-    audio.onended=()=>vNext();
-    const startT=Date.now();
-    progressInterval=setInterval(()=>{
-      if(audio.duration&&!isNaN(audio.duration)){
-        tb.style.width=Math.min((audio.currentTime/audio.duration)*100,100)+"%";
+  if (audio) {
+    audio.currentTime = 0;
+    audio.volume = 1;
+    audio.load(); // paksa load dulu
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(err => {
+        console.warn("Autoplay blocked:", err);
+        // Tampilkan unlock overlay lagi jika blocked
+        document.getElementById("unlockOverlay").classList.remove("hidden");
+        isPlaying = false;
+      });
+    }
+    audio.onended = () => vNext();
+
+    const startT = Date.now();
+    progressInterval = setInterval(() => {
+      if (audio.duration && !isNaN(audio.duration)) {
+        tb.style.width = Math.min((audio.currentTime / audio.duration) * 100, 100) + "%";
       } else {
-        tb.style.width=Math.min((Date.now()-startT)/15000*100,100)+"%";
+        tb.style.width = Math.min((Date.now() - startT) / 20000 * 100, 100) + "%";
       }
-    },200);
+    }, 200);
   }
 }
 
-function toggleV(e){
-  if(e) e.stopPropagation();
-  if(!isPlaying){playTrack(currentTrackIdx);}
-  else{
-    stopAllAudios();
+// ── TOGGLE PLAY/PAUSE ──
+function toggleV(e) {
+  if (e) e.stopPropagation();
+  if (!audioUnlocked) { unlockAudio(); return; }
+
+  if (!isPlaying) {
+    const audio = vAudios[currentTrackIdx];
+    if (audio) {
+      audio.play().catch(() => {});
+    }
+    document.getElementById("vdisc").classList.add("spin");
+    document.getElementById("varm").classList.add("on");
+    document.getElementById("btnPlayPause").textContent = "⏸ PAUSE";
+    isPlaying = true;
+  } else {
+    vAudios.forEach(a => { if (a && !a.paused) a.pause(); });
     document.getElementById("vdisc").classList.remove("spin");
     document.getElementById("varm").classList.remove("on");
-    document.querySelectorAll(".friend-chip").forEach(c=>c.classList.remove("playing"));
-    isPlaying=false;
+    document.getElementById("btnPlayPause").textContent = "▶ PLAY";
+    isPlaying = false;
   }
 }
-function vGoTo(i){ playTrack(i); }
-function vNext(e){ if(e)e.stopPropagation(); currentTrackIdx=(currentTrackIdx+1)%friendsList.length; playTrack(currentTrackIdx); }
-function vPrev(e){ if(e)e.stopPropagation(); currentTrackIdx=(currentTrackIdx-1+friendsList.length)%friendsList.length; playTrack(currentTrackIdx); }
+
+function vGoTo(i) {
+  if (!audioUnlocked) {
+    // Jika belum unlock (tapi overlay sudah dismiss oleh sistem), coba langsung play
+    audioUnlocked = true;
+    document.getElementById("unlockOverlay").classList.add("hidden");
+  }
+  playTrack(i);
+}
+
+function vNext(e) {
+  if (e) e.stopPropagation();
+  currentTrackIdx = (currentTrackIdx + 1) % friendsList.length;
+  playTrack(currentTrackIdx);
+}
+
+function vPrev(e) {
+  if (e) e.stopPropagation();
+  currentTrackIdx = (currentTrackIdx - 1 + friendsList.length) % friendsList.length;
+  playTrack(currentTrackIdx);
+}
+
+// Scroll dot indicator ke view saat track ganti
+function scrollToChip(idx) {
+  const chip = document.getElementById("fc" + idx);
+  if (chip) chip.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+}
 </script>
 </body>
 </html>
