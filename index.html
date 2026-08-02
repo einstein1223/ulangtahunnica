@@ -737,27 +737,7 @@ const vAudios = friendsList.map(f => {
   return a;
 });
 
-let audioUnlockedGlobal = false;
-function unlockAllAudios() {
-  if (audioUnlockedGlobal) return;
-  const audios = [bgMusic, kuisSound, ...vAudios];
-  audios.forEach(a => {
-    if (a) {
-      a.play().then(() => {
-        a.pause();
-        a.currentTime = 0;
-      }).catch(err => {
-        console.warn("Failed to unlock: " + a.src, err);
-      });
-    }
-  });
-  audioUnlockedGlobal = true;
-}
 
-// On first interaction anywhere, unlock all audios (supporting touchend/mouseup for strict mobile browsers)
-['touchstart', 'touchend', 'pointerdown', 'mousedown', 'mouseup', 'click'].forEach(ev => {
-  document.addEventListener(ev, unlockAllAudios, {once: true, passive: true});
-});
 
 const GAME_W = 800, GAME_H = 600;
 const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
@@ -870,8 +850,6 @@ function initJoystick() {
 
   btnTalk.addEventListener('touchend', e=>{
     e.preventDefault();
-    // Ensure all audios are unlocked on this gesture too
-    unlockAllAudios();
     if(dialogOpen){tutupDialog();return;}
     npcs.forEach(n=>{let d=Math.hypot(player.x+player.width/2-n.x-n.w/2,player.y+player.height/2-n.y-n.h/2);if(d<75)mulaiDialog(n);});
     if(specialSurprise.active){let d=Math.hypot(player.x+player.width/2-specialSurprise.x-specialSurprise.width/2,player.y+player.height/2-specialSurprise.y-specialSurprise.height/2);if(d<80)mulaiDialog(specialSurprise);}

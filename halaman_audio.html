@@ -575,30 +575,7 @@ friendsList.forEach((f, i) => {
 });
 dots2.classList.add("show");
 
-// ── UNLOCK AUDIO ──
-// Auto-unlock on ANY touch/click — no blocking overlay needed
-function ensureUnlocked(cb) {
-  if (audioUnlocked) { if(cb) cb(); return; }
-  
-  // Play and immediately pause all audios to unlock them for mobile browser policy
-  vAudios.forEach(a => {
-    if (a) {
-      a.play().then(() => {
-        a.pause();
-      }).catch(err => {
-        console.warn("Silent unlock failed for:", a.src, err);
-      });
-    }
-  });
 
-  audioUnlocked = true;
-  if (cb) cb();
-}
-
-// On first any interaction unlock audio
-['touchstart','pointerdown','click'].forEach(ev => {
-  document.addEventListener(ev, () => ensureUnlocked(null), {once: true, passive: true});
-});
 
 // ── STOP ALL ──
 function stopAllAudios() {
@@ -703,40 +680,38 @@ document.getElementById("progressTrack").addEventListener("touchstart", seekAudi
 // ── TOGGLE PLAY/PAUSE ──
 function toggleV(e) {
   if(e) e.stopPropagation();
-  ensureUnlocked(() => {
-    if(!isPlaying) {
-      const audio = vAudios[currentTrackIdx];
-      if(audio) audio.play().catch(()=>{});
-      document.getElementById("vdisc").classList.add("spin");
-      document.getElementById("varm").classList.add("on");
-      document.getElementById("btnPlayPause").textContent = "⏸ PAUSE";
-      document.getElementById("eqBars").classList.remove("paused");
-      isPlaying = true;
-    } else {
-      vAudios.forEach(a => { if(a && !a.paused) a.pause(); });
-      document.getElementById("vdisc").classList.remove("spin");
-      document.getElementById("varm").classList.remove("on");
-      document.getElementById("btnPlayPause").textContent = "▶ PLAY";
-      document.getElementById("eqBars").classList.add("paused");
-      isPlaying = false;
-    }
-  });
+  if(!isPlaying) {
+    const audio = vAudios[currentTrackIdx];
+    if(audio) audio.play().catch(()=>{});
+    document.getElementById("vdisc").classList.add("spin");
+    document.getElementById("varm").classList.add("on");
+    document.getElementById("btnPlayPause").textContent = "⏸ PAUSE";
+    document.getElementById("eqBars").classList.remove("paused");
+    isPlaying = true;
+  } else {
+    vAudios.forEach(a => { if(a && !a.paused) a.pause(); });
+    document.getElementById("vdisc").classList.remove("spin");
+    document.getElementById("varm").classList.remove("on");
+    document.getElementById("btnPlayPause").textContent = "▶ PLAY";
+    document.getElementById("eqBars").classList.add("paused");
+    isPlaying = false;
+  }
 }
 
 function vGoTo(i) {
-  ensureUnlocked(() => playTrack(i));
+  playTrack(i);
 }
 
 function vNext(e) {
   if(e) e.stopPropagation();
   const next = (currentTrackIdx + 1) % friendsList.length;
-  ensureUnlocked(() => playTrack(next));
+  playTrack(next);
 }
 
 function vPrev(e) {
   if(e) e.stopPropagation();
   const prev = (currentTrackIdx - 1 + friendsList.length) % friendsList.length;
-  ensureUnlocked(() => playTrack(prev));
+  playTrack(prev);
 }
 
 
