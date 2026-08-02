@@ -1319,6 +1319,10 @@ function gameLoop(){
 // ════════════════════════════════════════════════════════════════
 // BIRTHDAY — PARALLAX SPACE BACKGROUND & VINYL
 // ════════════════════════════════════════════════════════════════
+const bgMusic = new Audio("audio/jalanpulang.mp3");
+bgMusic.loop = true;
+bgMusic.volume = 0.25;
+
 const friendsList=[
   {name:"Rani",audio:"audio/rani.ogg"},{name:"Manda",audio:"audio/manda.ogg"},
   {name:"Resta",audio:"audio/restavia.ogg"},{name:"Dewi",audio:"audio/dewi.ogg"},
@@ -1332,6 +1336,7 @@ const friendsList=[
 let vAudios=[],currentTrackIdx=0,isPlaying=false,progressInterval=null;
 
 function initBirthday(){
+  bgMusic.play().catch(()=>{});
   const ma2=document.getElementById("vma"),dots2=document.getElementById("vdots");
   ma2.innerHTML=""; dots2.innerHTML="";
   vAudios=friendsList.map(f=>{const a=new Audio(f.audio);a.preload="auto";return a;});
@@ -1447,7 +1452,18 @@ function playTrack(idx){
   document.getElementById("vdisc").classList.add("spin");
   document.getElementById("varm").classList.add("on");
   isPlaying=true;
-  if(audio){audio.currentTime=0;audio.volume=1;audio.play().catch(()=>{});audio.onended=()=>vNext();}
+
+  // Kecilkan lagu background ke volume sangat lembut agar ucapan teman jernih
+  bgMusic.volume = 0.05;
+
+  if(audio){
+    audio.currentTime=0;audio.volume=1;
+    audio.play().catch(()=>{});
+    audio.onended=()=>{
+      bgMusic.volume = 0.25;
+      vNext();
+    };
+  }
   // Progress
   const tb=document.getElementById("vtb");
   tb.style.width="0%";
@@ -1464,7 +1480,11 @@ function playTrack(idx){
   },200);
 }
 
-function stopAllAudios(){vAudios.forEach(a=>{if(a){a.pause();a.currentTime=0;}});if(progressInterval)clearInterval(progressInterval);}
+function stopAllAudios(){
+  vAudios.forEach(a=>{if(a){a.pause();a.currentTime=0;}});
+  bgMusic.volume = 0.25;
+  if(progressInterval)clearInterval(progressInterval);
+}
 function toggleV(e){if(e)e.stopPropagation();if(!isPlaying){playTrack(currentTrackIdx);}else{stopAllAudios();document.getElementById("vdisc").classList.remove("spin");document.getElementById("varm").classList.remove("on");isPlaying=false;}}
 function vGoTo(i){playTrack(i);}
 function vNext(e){if(e)e.stopPropagation();currentTrackIdx=(currentTrackIdx+1)%friendsList.length;playTrack(currentTrackIdx);}
