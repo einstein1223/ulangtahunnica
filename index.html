@@ -262,48 +262,61 @@
     }
     .hero-sticky .tag {
       font-family:'Space Mono',monospace; font-size:clamp(9px,1.5vw,11px); font-weight:700;
-      letter-spacing:.35em; text-transform:uppercase; color:rgba(255,182,193,.6); margin-bottom:20px;
+      letter-spacing:.35em; text-transform:uppercase;
+      color:#ffb6d9;
+      background: rgba(0,0,0,0.45);
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom:20px;
     }
     .hero-sticky h1 {
       font-family:'Space Mono',monospace; font-weight:700;
-      font-size:clamp(28px,6vw,92px); color:#fff; line-height:1.15;
+      font-size:clamp(30px,6.5vw,92px); color:#fff; line-height:1.15;
       letter-spacing:.08em; text-transform:uppercase;
-      text-shadow:0 0 60px rgba(255,105,180,.4),0 0 100px rgba(255,20,147,.2);
+      text-shadow: 0 2px 0 rgba(0,0,0,0.8), 0 0 40px rgba(255,105,180,.8), 0 0 80px rgba(255,20,147,.4);
+      -webkit-text-stroke: 1px rgba(255,105,180,0.3);
       position:relative; z-index:4;
     }
     .hero-sticky .sub {
-      font-family:'Space Mono',monospace; font-size:clamp(10px,1.3vw,14px);
-      color:rgba(255,215,230,.75); margin-top:28px; letter-spacing:.12em;
+      font-family:'Space Mono',monospace; font-size:clamp(10px,1.4vw,14px);
+      color:#ffe4f0; margin-top:28px; letter-spacing:.12em;
       font-weight:400; text-transform:uppercase; max-width:480px; line-height:2; position:relative; z-index:4;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.3);
+      padding: 10px 16px;
+      border-radius: 8px;
+      backdrop-filter: blur(4px);
     }
     .hero-figure {
-      position:absolute; bottom:0; right:0; width:clamp(280px,38vw,560px);
+      position:absolute; bottom:0; right:0; width:clamp(240px,38vw,560px);
       height:110%; z-index:3; pointer-events:none; display:flex; align-items:flex-end; justify-content:center; overflow:hidden;
     }
     .hero-figure img {
       width:100%; height:auto; object-fit:contain; object-position:bottom center; display:block;
       animation:heroFloat 6s ease-in-out infinite; transform-origin:bottom center;
+      filter: drop-shadow(0 0 30px rgba(255,105,180,0.5)) drop-shadow(0 0 60px rgba(255,20,147,0.2));
     }
     @keyframes heroFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
     .hero-figure::after {
       display: none;
     }
-    .hero-sticky .scroll-cue { position:absolute; bottom:50px; display:flex; flex-direction:column; align-items:center; gap:8px; }
-    .scroll-cue span { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:.3em; text-transform:uppercase; color:rgba(255,182,193,.4); }
+    .hero-sticky .scroll-cue { position:absolute; bottom:40px; left:6vw; display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .scroll-cue span { font-family:'Space Mono',monospace; font-size:10px; letter-spacing:.3em; text-transform:uppercase; color:rgba(255,182,193,.5); text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
     .scroll-cue .arrow { width:1px; height:40px; background:linear-gradient(to bottom,rgba(255,105,180,.6),transparent); animation:scrollPulse 2s ease-in-out infinite; }
     @keyframes scrollPulse { 0%,100%{opacity:.3;transform:scaleY(1)} 50%{opacity:.8;transform:scaleY(1.3)} }
 
     /* ── TWIN PAIRED PHOTOS ── */
     .scene-twin-gallery {
-      min-height:130vh; display:flex; flex-direction:column;
-      align-items:center; justify-content:center; padding:80px 24px; position:relative;
+      min-height:100vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; padding:60px 24px; position:relative;
     }
     .twin-pair-container {
       position:relative; z-index:3; display:flex; align-items:center; justify-content:center;
       max-width:900px; width:100%; transition:transform .6s ease,opacity .6s ease;
     }
     .twin-frame {
-      position:relative; width:clamp(160px,30vw,340px); height:clamp(160px,30vw,340px);
+      position:relative; width:clamp(130px,30vw,320px); height:clamp(130px,30vw,320px);
       border-radius:50%; overflow:hidden;
       border:3px solid rgba(255,105,180,.5);
       box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 35px rgba(255,105,180,.25);
@@ -315,20 +328,25 @@
     .twin-frame.right-photo { margin-left:-16px; z-index:2; }
     .twin-touch-glow {
       position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-      width:70px; height:clamp(140px,25vw,180px); border-radius:50%;
+      width:70px; height:clamp(120px,25vw,180px); border-radius:50%;
       background:radial-gradient(ellipse at center,rgba(255,51,133,.65) 0%,rgba(255,105,180,.3) 40%,transparent 80%);
       filter:blur(14px); pointer-events:none; z-index:3; animation:seamPulse 3s ease-in-out infinite alternate;
     }
     @keyframes seamPulse { from{opacity:.6;transform:translate(-50%,-50%) scale(.9)} to{opacity:1;transform:translate(-50%,-50%) scale(1.15)} }
-    .twin-caption { margin-top:32px; text-align:center; max-width:650px; z-index:4; }
+    .twin-caption { margin-top:28px; text-align:center; max-width:90vw; z-index:4; padding: 0 16px; }
     .twin-caption h3 {
-      font-family:'Space Mono',monospace; font-size:clamp(12px,1.8vw,17px); font-weight:700;
+      font-family:'Space Mono',monospace; font-size:clamp(13px,2vw,18px); font-weight:700;
       color:#ff85c0; letter-spacing:.15em; text-transform:uppercase; margin-bottom:10px;
-      text-shadow:0 0 15px rgba(255,105,180,.5);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 20px rgba(255,105,180,.6);
     }
     .twin-caption p {
-      font-family:'Space Mono',monospace; font-size:clamp(10px,1.3vw,14px);
-      color:rgba(255,215,230,.85); line-height:1.8; letter-spacing:.06em; text-transform:uppercase;
+      font-family:'Space Mono',monospace; font-size:clamp(11px,1.4vw,15px);
+      color:#fff; line-height:1.9; letter-spacing:.06em; text-transform:uppercase;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,1);
+      background: rgba(0,0,0,0.4);
+      padding: 10px 16px;
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
     }
     .twin-caption .g-line { width:40px; height:2px; background:rgba(255,105,180,.4); margin:16px auto; }
 
@@ -338,11 +356,16 @@
       position:sticky; top:0; height:100vh; display:flex; align-items:center;
       justify-content:center; text-align:center; padding:40px 24px; z-index:3;
     }
-    .text-sticky .inner { max-width:620px; }
+    .text-sticky .inner { max-width:min(620px,90vw); }
     .text-sticky p {
-      font-family:'Space Mono',monospace; font-size:clamp(14px,2.2vw,24px);
-      color:rgba(255,215,230,.9); line-height:1.9; letter-spacing:.08em; text-transform:uppercase;
-      text-shadow:0 0 20px rgba(255,105,180,.3);
+      font-family:'Space Mono',monospace; font-size:clamp(15px,2.4vw,26px);
+      color:#fff; line-height:1.9; letter-spacing:.08em; text-transform:uppercase;
+      text-shadow: 0 2px 10px rgba(0,0,0,1), 0 0 30px rgba(255,105,180,.5);
+      background: rgba(0,0,0,0.45);
+      padding: 20px 28px;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,105,180,0.15);
     }
     .text-sticky .tl { width:50px; height:2px; background:rgba(255,105,180,.4); margin:28px auto; }
 
@@ -437,11 +460,43 @@
 
     /* Responsive adjustments */
     @media(max-width:680px) {
-      .hero-sticky { align-items:center; text-align:center; padding:0 20px; }
-      .hero-figure { width:clamp(200px,55vw,320px); }
-      .twin-frame { width:clamp(130px,42vw,200px); height:clamp(130px,42vw,200px); }
-      .twin-frame.left-photo { margin-right:-10px; }
-      .twin-frame.right-photo { margin-left:-10px; }
+      .hero-sticky {
+        align-items: flex-start;
+        text-align: left;
+        padding: 0 20px;
+        justify-content: flex-end;
+        padding-bottom: 48vh;
+      }
+      .hero-figure {
+        width: 80vw;
+        right: 0;
+        left: 0;
+        margin: 0 auto;
+        justify-content: center;
+      }
+      .hero-sticky h1 {
+        font-size: clamp(32px, 9vw, 56px);
+        text-shadow: 0 3px 0 rgba(0,0,0,1), 0 0 30px rgba(255,105,180,.9);
+      }
+      .hero-sticky .sub {
+        font-size: clamp(10px, 2.8vw, 14px);
+        margin-top: 16px;
+        max-width: 85vw;
+      }
+      .hero-sticky .scroll-cue {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .twin-frame { width: clamp(120px, 40vw, 180px); height: clamp(120px, 40vw, 180px); }
+      .twin-frame.left-photo { margin-right:-8px; }
+      .twin-frame.right-photo { margin-left:-8px; }
+      .scene-twin-gallery { padding: 40px 16px; min-height: 80vh; }
+      .text-sticky p { font-size: clamp(13px, 4vw, 18px); padding: 16px 18px; }
+      .scene-vinyl { padding: 60px 16px; }
+    }
+    @media(max-width:400px) {
+      .twin-frame { width: clamp(100px, 38vw, 150px); height: clamp(100px, 38vw, 150px); }
+      .hero-sticky h1 { font-size: clamp(26px, 8.5vw, 44px); }
     }
   </style>
 </head>
@@ -528,7 +583,7 @@
         <div class="sub">a word for your birthday,<br>I hope u enjoy it — this is for you, Nica.</div>
         <div class="scroll-cue"><span>SCROLL</span><div class="arrow"></div></div>
         <div class="hero-figure" id="heroFigure">
-          <img src="assets/annissa/nica 4.png" alt="Nica" id="heroFigureImg" onerror="this.style.opacity='0'">
+          <img src="assets/annissa/nica 8.png" alt="Nica" id="heroFigureImg" onerror="this.style.opacity='0'">
         </div>
       </div>
     </section>
@@ -881,13 +936,13 @@ let player={x:2*T,y:14*T,width:40,height:40,vx:0,vy:0,speed:3.2,accel:.4,frictio
 let camX=0,lives=3,shakeTimer=0,spawnX=2*T,spawnY=14*T;
 
 let npcs=[
-  {id:1,x:200,  y:14*T-40,w:40,h:40,anims:npcAnims.t1,         portrait:"assets/npc/teman1.png",name:"Bintang", question:"7 x 8 = ?",   answer:"56",  interacted:false},
-  {id:2,x:480,  y:12*T-40,w:40,h:40,anims:npcAnims.t2,         portrait:"",                    name:"Annissa", question:"9 x 8 = ?",   answer:"72",  interacted:false},
-  {id:3,x:760,  y:14*T-40,w:40,h:40,anims:npcAnims.t3,         portrait:"",                    name:"Daniel",  question:"6 x 7 = ?",   answer:"42",  interacted:false},
-  {id:4,x:1050, y:10*T-40,w:40,h:40,anims:npcAnims.crabby,     portrait:"",                    name:"Teman 4", question:"8 x 8 = ?",   answer:"64",  interacted:false},
-  {id:5,x:1350, y:13*T-40,w:40,h:40,anims:npcAnims.pinkStar,   portrait:"",                    name:"Teman 5", question:"9 x 7 = ?",   answer:"63",  interacted:false}
+  {id:1,x:200,  y:14*T-40,w:40,h:40,anims:npcAnims.t1,         portrait:"assets/npc/teman1.png",name:"Ketakutanmu", question:"7 x 8 = ?",   answer:"56",  interacted:false},
+  {id:2,x:480,  y:12*T-40,w:40,h:40,anims:npcAnims.t2,         portrait:"",                    name:"Kekhawatiranmu", question:"9 x 8 = ?",   answer:"72",  interacted:false},
+  {id:3,x:760,  y:14*T-40,w:40,h:40,anims:npcAnims.t3,         portrait:"",                    name:"Kegelisahanmu",  question:"6 x 7 = ?",   answer:"42",  interacted:false},
+  {id:4,x:1050, y:10*T-40,w:40,h:40,anims:npcAnims.crabby,     portrait:"",                    name:"Keraguanmu", question:"8 x 8 = ?",   answer:"64",  interacted:false},
+  {id:5,x:1350, y:13*T-40,w:40,h:40,anims:npcAnims.pinkStar,   portrait:"",                    name:"Kekecewaanmu", question:"9 x 7 = ?",   answer:"63",  interacted:false}
 ];
-let specialSurprise={x:50*T,y:8*T-44,width:44,height:44,img:chestImg,portrait:"",name:"PETI HARTA",question:"FINAL: 14 x 14 = ?",answer:"196",active:true};
+let specialSurprise={x:50*T,y:8*T-44,width:44,height:44,img:chestImg,portrait:"",name:"LEPASKAN SEMUANYA",question:"FINAL: 14 x 14 = ?",answer:"196",active:true};
 let foundCount=0;const totalFriends=npcs.length;
 
 // Input
@@ -999,9 +1054,11 @@ function showBirthday(){
   const bgMusic = document.getElementById("bgMusic");
   if(bgMusic){
     bgMusic.volume = 0.5;
-    bgMusic.play().catch(()=>{
-      // Autoplay diblokir browser — putar saat user pertama kali klik
-      document.addEventListener('click', ()=>bgMusic.play().catch(()=>{}), {once:true});
+    const tryPlay = () => bgMusic.play().catch(()=>{});
+    tryPlay();
+    // Fallback untuk mobile yang blokir autoplay
+    ['click','touchstart','touchend'].forEach(ev => {
+      document.addEventListener(ev, tryPlay, {once:true});
     });
   }
   initBirthday();

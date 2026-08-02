@@ -9,105 +9,98 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; }
-    html, body { height: 100%; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    html, body { min-height: 100%; }
+
     body {
       font-family: 'Outfit', sans-serif;
       color: #ffe6f0;
       min-height: 100vh;
       overflow-x: hidden;
-      /* Background utama: bghalaman.png */
-      background-color: #12050f;
+      background-color: #0d0210;
       background-image: url('assets/bghalaman.png');
       background-size: cover;
       background-position: center top;
       background-attachment: fixed;
     }
 
-    /* DARK OVERLAY agar teks lebih terbaca di atas background */
+    /* DARK OVERLAY - more opaque for readability */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background: linear-gradient(
         180deg,
-        rgba(10, 2, 12, 0.55) 0%,
-        rgba(18, 5, 15, 0.45) 50%,
-        rgba(10, 2, 12, 0.70) 100%
+        rgba(8, 1, 10, 0.75) 0%,
+        rgba(15, 3, 13, 0.65) 40%,
+        rgba(8, 1, 10, 0.80) 100%
       );
       pointer-events: none;
       z-index: 0;
     }
 
-    /* UNLOCK OVERLAY — tampil di HP agar audio bisa diputar */
-    #unlockOverlay {
-      position: fixed; inset: 0; z-index: 999;
-      background: rgba(10, 2, 14, 0.92);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center; padding: 32px;
-      gap: 24px;
+    /* ── PARTICLES ── */
+    #ap-particles {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 1;
+      overflow: hidden;
     }
-    #unlockOverlay.hidden { display: none; }
-    #unlockOverlay .unlock-emoji { font-size: 56px; animation: pulse 2s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-    #unlockOverlay h2 {
-      font-family: 'Space Mono', monospace; font-weight: 700;
-      font-size: clamp(20px, 5vw, 28px); color: #ff85c0;
-      letter-spacing: .1em; text-transform: uppercase;
-      text-shadow: 0 0 30px rgba(255,105,180,.7);
+    .ap-particle {
+      position: absolute; border-radius: 50%;
+      animation: apFloat linear infinite; opacity: 0;
     }
-    #unlockOverlay p {
-      font-size: clamp(14px, 3.5vw, 16px); color: rgba(255,215,230,.8);
-      line-height: 1.7; letter-spacing: .03em;
+    @keyframes apFloat {
+      0%   { opacity: 0; transform: translateY(0) scale(0); }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.5; }
+      100% { opacity: 0; transform: translateY(-100vh) scale(1); }
     }
-    #unlockBtn {
-      background: linear-gradient(135deg, #ff69b4, #ff1493);
-      color: #fff; border: none;
-      padding: clamp(14px, 4vw, 18px) clamp(36px, 10vw, 56px);
-      font-size: clamp(14px, 3.5vw, 16px); font-weight: 700;
-      font-family: 'Space Mono', monospace;
-      letter-spacing: .15em; text-transform: uppercase;
-      border-radius: 50px; cursor: pointer;
-      box-shadow: 0 6px 30px rgba(255,20,147,.5);
-      transition: transform .3s, box-shadow .3s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    #unlockBtn:active { transform: scale(0.96); }
 
     /* MAIN PAGE */
     .page-wrap {
-      position: relative; z-index: 1;
+      position: relative; z-index: 2;
       min-height: 100vh;
       display: flex; flex-direction: column;
       align-items: center;
+      padding-bottom: 60px;
     }
 
     /* ── HEADER ── */
     .p-header {
       text-align: center;
-      padding: clamp(36px, 8vw, 80px) 20px clamp(16px, 4vw, 32px);
+      padding: clamp(40px, 9vw, 90px) 20px clamp(20px, 4vw, 36px);
       width: 100%;
+      max-width: 700px;
     }
     .p-header .tag {
       font-family: 'Space Mono', monospace;
-      font-size: clamp(10px, 2.5vw, 12px); font-weight: 700;
-      letter-spacing: .3em; text-transform: uppercase;
-      color: rgba(255,182,193,.7); margin-bottom: 12px;
+      font-size: clamp(9px, 2.2vw, 11px); font-weight: 700;
+      letter-spacing: .35em; text-transform: uppercase;
+      color: #ff85c0;
+      background: rgba(255,105,180,0.12);
+      border: 1px solid rgba(255,105,180,0.3);
+      padding: 6px 18px; border-radius: 50px;
+      display: inline-block; margin-bottom: 18px;
+      backdrop-filter: blur(8px);
     }
     .p-header h1 {
       font-family: 'Space Mono', monospace; font-weight: 700;
-      font-size: clamp(28px, 7vw, 60px);
+      font-size: clamp(26px, 7vw, 58px);
       color: #fff;
-      letter-spacing: .1em; text-transform: uppercase;
-      margin-bottom: 12px;
-      text-shadow: 0 0 40px rgba(255,105,180,.8), 0 2px 0 rgba(0,0,0,.5);
+      letter-spacing: .08em; text-transform: uppercase;
+      margin-bottom: 14px;
+      text-shadow: 0 3px 0 rgba(0,0,0,0.8), 0 0 40px rgba(255,105,180,.9), 0 0 80px rgba(255,20,147,.5);
+      line-height: 1.15;
     }
     .p-header .sub {
-      font-size: clamp(13px, 3vw, 16px);
-      color: rgba(255,230,240,.9);
-      letter-spacing: .06em; line-height: 1.8;
-      text-shadow: 0 1px 4px rgba(0,0,0,.6);
+      font-size: clamp(12px, 3vw, 15px);
+      color: #ffe0ee;
+      letter-spacing: .05em; line-height: 1.8;
+      text-shadow: 0 2px 8px rgba(0,0,0,.9);
+      background: rgba(0,0,0,0.35);
+      padding: 10px 20px;
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
     }
     .div-line {
       width: 60px; height: 2px;
@@ -115,28 +108,40 @@
       margin: 20px auto 0;
     }
 
-    /* ── VINYL SECTION ── */
-    .vinyl-section {
+    /* ── PLAYER CARD ── */
+    .player-card {
+      width: min(540px, 94vw);
+      background: rgba(15, 3, 18, 0.72);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1.5px solid rgba(255,105,180,.35);
+      border-radius: 28px;
+      padding: clamp(20px, 5vw, 36px);
+      box-shadow:
+        0 30px 80px rgba(0,0,0,.8),
+        0 0 40px rgba(255,105,180,.12),
+        inset 0 1px 0 rgba(255,255,255,.05);
       display: flex; flex-direction: column; align-items: center;
-      padding: 24px 20px 32px; width: 100%;
+      gap: 16px;
+      margin: 0 auto;
     }
 
-    /* RECORD */
+    /* VINYL RECORD */
     .vc {
       position: relative;
-      width: clamp(180px, 50vw, 260px);
-      height: clamp(180px, 50vw, 260px);
-      cursor: pointer; margin-bottom: 8px;
+      width: clamp(160px, 44vw, 230px);
+      height: clamp(160px, 44vw, 230px);
+      cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
     .vdisc {
       width: 100%; height: 100%; border-radius: 50%;
       background:
-        radial-gradient(circle at 50% 50%, #1a0815 0%, #1a0815 18%, transparent 18.5%),
+        radial-gradient(circle at 50% 50%, #140610 0%, #140610 18%, transparent 18.5%),
         repeating-radial-gradient(circle at 50%, transparent 18.5%, transparent 19%, rgba(120,30,80,.5) 19.2%, transparent 19.4%),
-        radial-gradient(circle, #20081a 0%, #280a22 60%, #140412 100%);
+        radial-gradient(circle, #1c061a 0%, #240820 60%, #100310 100%);
       border: 2px solid rgba(255,105,180,.35);
-      box-shadow: 0 10px 40px rgba(0,0,0,.8), 0 0 30px rgba(255,105,180,.25);
+      box-shadow: 0 10px 40px rgba(0,0,0,.9), 0 0 30px rgba(255,105,180,.2);
       transition: box-shadow .3s;
     }
     .vdisc.spin { animation: vspin 2.5s linear infinite; }
@@ -144,22 +149,22 @@
 
     .vlabel {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-      width: clamp(60px, 16vw, 85px); height: clamp(60px, 16vw, 85px);
+      width: clamp(55px, 15vw, 80px); height: clamp(55px, 15vw, 80px);
       border-radius: 50%;
       background: linear-gradient(145deg, #ff69b4, #c71585);
       display: flex; align-items: center; justify-content: center;
       pointer-events: none;
-      box-shadow: 0 0 25px rgba(255,105,180,.7);
+      box-shadow: 0 0 30px rgba(255,105,180,.8), inset 0 1px 0 rgba(255,255,255,.2);
     }
     .vlabel span {
       font-family: 'Space Mono', monospace;
-      font-size: clamp(7px, 2vw, 10px); font-weight: 700;
+      font-size: clamp(6px, 1.8vw, 9px); font-weight: 700;
       color: #fff; text-align: center; line-height: 1.3;
       letter-spacing: .05em; text-transform: uppercase;
     }
     .vhole {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-      width: 12px; height: 12px; border-radius: 50%; background: #12050f; z-index: 2;
+      width: 11px; height: 11px; border-radius: 50%; background: #0d0210; z-index: 2;
     }
 
     /* TONEARM */
@@ -169,92 +174,134 @@
       transform: rotate(-32deg);
     }
     .varm.on { transform: rotate(-4deg); }
-    .varm-base { position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; border-radius: 50%; background: #ff69b4; box-shadow: 0 0 10px #ff69b4; }
+    .varm-base { position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; border-radius: 50%; background: #ff69b4; box-shadow: 0 0 12px #ff69b4; }
     .varm-rod { position: absolute; top: 12px; right: 11px; width: 3px; height: 112px; background: linear-gradient(to bottom, #ff69b4, #8b0042); border-radius: 2px; transform-origin: top; transform: rotate(8deg); }
     .varm-tip { position: absolute; bottom: -2px; left: -4px; width: 10px; height: 14px; background: #ff1493; border-radius: 2px; }
 
-    /* INFO BAR */
-    .vhint {
-      font-family: 'Space Mono', monospace;
-      font-size: clamp(11px, 3vw, 13px); font-weight: 700;
-      color: rgba(255,182,193,.85); letter-spacing: .12em;
-      text-transform: uppercase; margin-top: 18px;
-      transition: opacity .6s; text-align: center;
-      text-shadow: 0 1px 6px rgba(0,0,0,.7);
+    /* TRACK INFO */
+    .track-info {
+      text-align: center; width: 100%;
     }
-    .vhint.gone { opacity: 0; pointer-events: none; height: 0; margin: 0; overflow: hidden; }
+    .track-hint {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(10px, 2.5vw, 12px); font-weight: 700;
+      color: rgba(255,182,193,.85); letter-spacing: .14em;
+      text-transform: uppercase; margin-top: 4px;
+      transition: opacity .6s;
+      text-shadow: 0 2px 6px rgba(0,0,0,.8);
+    }
+    .track-hint.gone { opacity: 0; pointer-events: none; height: 0; margin: 0; overflow: hidden; }
 
-    .vtinfo {
+    .track-name {
       font-family: 'Space Mono', monospace;
-      font-size: clamp(12px, 3vw, 15px); font-weight: 700;
-      color: #ff85c0; letter-spacing: .08em; text-align: center;
-      opacity: 0; transition: opacity .5s; margin-top: 12px;
-      text-transform: uppercase;
-      text-shadow: 0 0 20px rgba(255,105,180,.6), 0 1px 4px rgba(0,0,0,.6);
+      font-size: clamp(18px, 5vw, 30px); font-weight: 700;
+      color: #fff; letter-spacing: .08em; text-transform: uppercase;
+      opacity: 0; transition: opacity .5s;
+      text-shadow: 0 3px 0 rgba(0,0,0,0.7), 0 0 25px rgba(255,105,180,.8);
+      margin-bottom: 4px;
     }
-    .vtinfo.show { opacity: 1; }
+    .track-name.show { opacity: 1; }
+
+    .track-subtitle {
+      font-size: clamp(11px, 2.8vw, 13px);
+      color: rgba(255,182,193,.7);
+      letter-spacing: .15em; text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+      opacity: 0; transition: opacity .5s .1s;
+      text-shadow: 0 1px 4px rgba(0,0,0,.8);
+    }
+    .track-subtitle.show { opacity: 1; }
+
+    /* EQUALIZER BARS (playing animation) */
+    .eq-bars {
+      display: flex; align-items: flex-end; gap: 3px;
+      height: 22px; opacity: 0; transition: opacity .5s;
+      margin: 6px auto 2px;
+    }
+    .eq-bars.show { opacity: 1; }
+    .eq-bar {
+      width: 4px; border-radius: 2px;
+      background: linear-gradient(to top, #ff1493, #ff85c0);
+      animation: eqAnim 0.8s ease-in-out infinite alternate;
+    }
+    .eq-bar:nth-child(1) { animation-duration: 0.5s; }
+    .eq-bar:nth-child(2) { animation-duration: 0.7s; animation-delay: .1s; }
+    .eq-bar:nth-child(3) { animation-duration: 0.4s; animation-delay: .2s; }
+    .eq-bar:nth-child(4) { animation-duration: 0.6s; animation-delay: .05s; }
+    .eq-bar:nth-child(5) { animation-duration: 0.8s; animation-delay: .15s; }
+    .eq-bars.paused .eq-bar { animation-play-state: paused; }
+    @keyframes eqAnim {
+      0%  { height: 4px; }
+      100%{ height: 20px; }
+    }
 
     /* PROGRESS BAR */
-    .vtw {
-      margin-top: 10px; width: min(340px, 85vw); height: 5px;
-      background: rgba(255,105,180,.15); border-radius: 3px; overflow: hidden;
+    .progress-wrap {
+      width: 100%; display: flex; align-items: center; gap: 10px;
       opacity: 0; transition: opacity .5s;
     }
-    .vtw.show { opacity: 1; }
-    .vtb { width: 0%; height: 100%; background: linear-gradient(90deg, #ff69b4, #ff1493); transition: width .4s linear; border-radius: 3px; }
+    .progress-wrap.show { opacity: 1; }
+    .progress-time {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(9px, 2vw, 11px); color: rgba(255,182,193,.7);
+      min-width: 36px; text-align: center;
+    }
+    .progress-track {
+      flex: 1; height: 6px;
+      background: rgba(255,105,180,.12); border-radius: 3px;
+      cursor: pointer; overflow: hidden;
+      border: 1px solid rgba(255,105,180,.15);
+    }
+    .progress-fill {
+      width: 0%; height: 100%;
+      background: linear-gradient(90deg, #ff69b4, #ff1493);
+      transition: width .4s linear; border-radius: 3px;
+    }
 
     /* CONTROLS */
     .vcontrols {
-      margin-top: 14px; display: flex; align-items: center;
-      gap: clamp(8px, 2vw, 14px); opacity: 0; transition: opacity .5s;
+      display: flex; align-items: center; gap: clamp(8px, 2.5vw, 14px);
+      opacity: 0; transition: opacity .5s;
       flex-wrap: wrap; justify-content: center;
     }
     .vcontrols.show { opacity: 1; }
     .vbtn {
-      background: rgba(255,105,180,.18); border: 1.5px solid rgba(255,105,180,.5);
-      color: #fff; font-family: 'Space Mono', monospace;
-      font-size: clamp(11px, 3vw, 13px); font-weight: 700;
+      background: rgba(255,105,180,.12); border: 1.5px solid rgba(255,105,180,.4);
+      color: #ff85c0; font-family: 'Space Mono', monospace;
+      font-size: clamp(10px, 2.5vw, 12px); font-weight: 700;
       padding: clamp(10px, 3vw, 13px) clamp(16px, 4vw, 22px);
       border-radius: 50px; cursor: pointer; transition: all .3s ease;
       -webkit-tap-highlight-color: transparent; touch-action: manipulation;
       letter-spacing: .1em; text-shadow: 0 1px 3px rgba(0,0,0,.5);
+      min-height: 44px;
     }
     .vbtn:hover, .vbtn:active {
       background: #ff69b4; color: #12050f;
       box-shadow: 0 0 20px rgba(255,105,180,.7);
       border-color: #ff69b4; text-shadow: none;
     }
-
-    /* NOW PLAYING NAME */
-    .vma { margin-top: 22px; width: min(500px, 92vw); min-height: 100px; position: relative; }
-    .vmsg {
-      position: absolute; inset: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; text-align: center; padding: 16px;
-      opacity: 0; transform: translateY(8px); transition: opacity .8s, transform .8s;
-      pointer-events: none;
+    .vbtn-play {
+      background: linear-gradient(135deg, #ff69b4, #ff1493);
+      color: #fff; border-color: transparent;
+      padding: clamp(12px, 3.5vw, 16px) clamp(24px, 6vw, 36px);
+      font-size: clamp(12px, 3vw, 14px);
     }
-    .vmsg.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    .vmsg-name {
-      font-family: 'Space Mono', monospace; font-weight: 700;
-      font-size: clamp(24px, 7vw, 40px); color: #fff;
-      letter-spacing: .1em; text-transform: uppercase;
-      text-shadow: 0 0 25px rgba(255,105,180,.7), 0 2px 6px rgba(0,0,0,.7);
-    }
-    .vmsg-line { width: 36px; height: 2px; background: rgba(255,105,180,.5); margin: 12px 0; }
-    .vmsg-tag {
-      font-size: clamp(11px, 3vw, 13px); color: rgba(255,230,240,.85);
-      letter-spacing: .15em; text-transform: uppercase;
-      font-family: 'Space Mono', monospace;
-      text-shadow: 0 1px 4px rgba(0,0,0,.6);
+    .vbtn-play:hover, .vbtn-play:active {
+      background: linear-gradient(135deg, #ff85c0, #ff69b4);
+      color: #fff; text-shadow: none;
+      box-shadow: 0 0 30px rgba(255,20,147,.7);
     }
 
     /* DOT INDICATORS */
     .vdots {
-      margin-top: 16px; display: flex; gap: 8px; align-items: center;
-      justify-content: center; flex-wrap: wrap; max-width: min(340px, 90vw);
+      display: flex; gap: 6px; align-items: center;
+      justify-content: center; flex-wrap: wrap;
+      max-width: min(360px, 90vw);
+      opacity: 0; transition: opacity .5s .2s;
     }
+    .vdots.show { opacity: 1; }
     .vdot {
-      width: 8px; height: 8px; border-radius: 50%;
+      width: 7px; height: 7px; border-radius: 50%;
       background: rgba(255,105,180,.2); border: 1.5px solid rgba(255,105,180,.4);
       transition: all .5s; cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -262,34 +309,45 @@
     .vdot.past { background: rgba(255,105,180,.5); }
     .vdot.now { background: #ff69b4; width: 24px; border-radius: 4px; box-shadow: 0 0 12px rgba(255,105,180,.9); }
 
-    /* ── FRIENDS GRID ── */
+    /* ── FRIENDS SECTION ── */
     .friends-section {
-      padding: clamp(20px, 5vw, 40px) 20px clamp(40px, 10vw, 80px);
-      text-align: center; width: 100%; max-width: 800px;
+      padding: clamp(28px, 6vw, 48px) 16px clamp(40px, 8vw, 70px);
+      text-align: center; width: 100%; max-width: 640px;
+    }
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(9px, 2vw, 11px); font-weight: 700;
+      letter-spacing: .35em; text-transform: uppercase;
+      color: #ff85c0;
+      background: rgba(255,105,180,0.1);
+      border: 1px solid rgba(255,105,180,0.25);
+      padding: 5px 16px; border-radius: 50px;
+      display: inline-block; margin-bottom: 20px;
+      backdrop-filter: blur(8px);
     }
     .friends-section h2 {
       font-family: 'Space Mono', monospace;
-      font-size: clamp(15px, 3.5vw, 20px); font-weight: 700;
-      color: #fff; letter-spacing: .2em; text-transform: uppercase;
+      font-size: clamp(14px, 3.5vw, 20px); font-weight: 700;
+      color: #fff; letter-spacing: .15em; text-transform: uppercase;
       margin-bottom: 24px;
-      text-shadow: 0 0 20px rgba(255,105,180,.6), 0 2px 6px rgba(0,0,0,.6);
+      text-shadow: 0 3px 0 rgba(0,0,0,0.7), 0 0 25px rgba(255,105,180,.7);
     }
     .friends-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(clamp(100px, 28vw, 150px), 1fr));
-      gap: clamp(10px, 2.5vw, 14px);
-      max-width: 680px; margin: 0 auto;
+      grid-template-columns: repeat(auto-fill, minmax(clamp(90px, 26vw, 140px), 1fr));
+      gap: clamp(8px, 2vw, 12px);
     }
     .friend-chip {
-      background: rgba(20, 5, 20, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1.5px solid rgba(255,105,180,.35);
+      background: rgba(18, 4, 22, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(255,105,180,.3);
       border-radius: 16px;
-      padding: clamp(12px, 3.5vw, 16px) 10px;
+      padding: clamp(12px, 3vw, 18px) 8px;
       cursor: pointer;
       font-family: 'Outfit', sans-serif;
-      font-size: clamp(13px, 3.5vw, 16px); font-weight: 700;
-      letter-spacing: .06em; text-transform: uppercase;
+      font-size: clamp(12px, 3.2vw, 15px); font-weight: 700;
+      letter-spacing: .04em; text-transform: uppercase;
       color: rgba(255,230,240,.9);
       transition: all .3s cubic-bezier(.175,.885,.32,1.275);
       -webkit-tap-highlight-color: transparent;
@@ -297,59 +355,101 @@
       text-align: center;
       text-shadow: 0 1px 4px rgba(0,0,0,.5);
       box-shadow: 0 4px 16px rgba(0,0,0,.4);
-      /* Ukuran tap area yang nyaman di HP */
-      min-height: clamp(50px, 12vw, 64px);
+      min-height: clamp(48px, 11vw, 64px);
       display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 4px;
+      position: relative; overflow: hidden;
+    }
+    .friend-chip::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,105,180,.08), transparent);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+    .friend-chip .chip-emoji {
+      font-size: clamp(16px, 4vw, 20px);
+      line-height: 1;
     }
     .friend-chip:active {
-      background: rgba(255,105,180,.35);
-      transform: scale(0.96);
+      background: rgba(255,105,180,.25);
+      transform: scale(0.95);
     }
     .friend-chip.playing {
-      background: linear-gradient(135deg, rgba(255,20,147,.5), rgba(255,105,180,.35));
+      background: linear-gradient(135deg, rgba(255,20,147,.45), rgba(255,105,180,.3));
       color: #fff; border-color: #ff69b4;
-      box-shadow: 0 0 20px rgba(255,20,147,.5), 0 4px 16px rgba(0,0,0,.4);
+      box-shadow: 0 0 24px rgba(255,20,147,.5), 0 4px 16px rgba(0,0,0,.4);
+    }
+    .friend-chip.played {
+      border-color: rgba(255,105,180,.6);
+      background: rgba(18, 4, 22, 0.8);
+    }
+    .friend-chip.played::after {
+      content: '✓';
+      position: absolute; top: 4px; right: 6px;
+      font-size: 10px; color: #ff69b4; font-family: 'Space Mono', monospace;
     }
 
-    /* ── FOOTER ── */
-    .footer { text-align: center; padding: clamp(24px, 6vw, 48px) 20px; width: 100%; }
-    .footer p {
-      font-size: clamp(12px, 3vw, 14px); color: rgba(255,182,193,.6);
-      letter-spacing: .15em; text-transform: uppercase; line-height: 2;
-      text-shadow: 0 1px 4px rgba(0,0,0,.5);
+    /* ── BACK BUTTON ── */
+    .footer {
+      text-align: center; padding: clamp(24px, 5vw, 40px) 20px;
+      width: 100%;
     }
-    .footer a {
-      color: rgba(255,150,200,.8); text-decoration: none;
-      padding: 10px 20px; display: inline-block;
-      border: 1px solid rgba(255,105,180,.3); border-radius: 50px;
-      margin-top: 12px; transition: all .3s;
-      font-weight: 700;
+    .footer p {
+      font-size: clamp(11px, 2.5vw, 13px); color: rgba(255,182,193,.6);
+      letter-spacing: .15em; text-transform: uppercase; line-height: 2;
+      text-shadow: 0 1px 4px rgba(0,0,0,.6);
+      margin-bottom: 16px;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: rgba(255,150,200,.9); text-decoration: none;
+      padding: 12px 28px;
+      border: 1.5px solid rgba(255,105,180,.4);
+      border-radius: 50px;
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(10px, 2.5vw, 12px); font-weight: 700;
+      letter-spacing: .15em; text-transform: uppercase;
+      transition: all .3s;
+      background: rgba(255,105,180,.08);
+      backdrop-filter: blur(8px);
       -webkit-tap-highlight-color: transparent;
     }
-    .footer a:active { background: rgba(255,105,180,.2); }
+    .back-link:active {
+      background: rgba(255,105,180,.25);
+      box-shadow: 0 0 20px rgba(255,105,180,.4);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      .vc { width: clamp(140px, 48vw, 190px); height: clamp(140px, 48vw, 190px); }
+      .player-card { padding: 20px 16px; gap: 14px; border-radius: 20px; }
+      .vcontrols { gap: 8px; }
+      .vbtn { padding: 10px 14px; font-size: 10px; }
+      .friends-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    }
+    @media (max-width: 360px) {
+      .friends-grid { grid-template-columns: repeat(2, 1fr); }
+      .vc { width: 130px; height: 130px; }
+    }
   </style>
 </head>
 <body>
 
-<!-- UNLOCK OVERLAY (untuk HP agar audio bisa diputar) -->
-<div id="unlockOverlay">
-  <div class="unlock-emoji">🎵</div>
-  <h2>Pesan untuk Nica</h2>
-  <p>Ketuk tombol di bawah untuk mulai<br>mendengarkan pesan dari teman-temanmu!</p>
-  <button id="unlockBtn" onclick="unlockAudio()">🎶 BUKA PESAN</button>
-</div>
+<div id="ap-particles"></div>
 
 <div class="page-wrap">
   <!-- HEADER -->
   <div class="p-header">
     <div class="tag">🎂 A BIRTHDAY COSMIC JOURNEY</div>
-    <h1>PESAN UNTUK NICA</h1>
-    <p class="sub">{{ friendsList.length }} suara penuh cinta untukmu ✨<br>Ketuk nama teman untuk mendengarkan pesannya.</p>
+    <h1>PESAN<br>UNTUK NICA</h1>
+    <p class="sub" id="headerSub">Suara penuh cinta untukmu ✨<br>Ketuk nama teman untuk mendengarkan pesannya.</p>
     <div class="div-line"></div>
   </div>
 
-  <!-- VINYL PLAYER -->
-  <div class="vinyl-section">
+  <!-- VINYL PLAYER CARD -->
+  <div class="player-card">
+    <!-- VINYL -->
     <div class="vc" id="vinylContainer" onclick="toggleV()">
       <div class="vdisc" id="vdisc"></div>
       <div class="vlabel"><span>HAPPY<br>BIRTHDAY<br>NICA</span></div>
@@ -360,116 +460,155 @@
       </div>
     </div>
 
-    <div class="vhint" id="vhint">KETUK NAMA TEMAN DI BAWAH ↓</div>
-    <div class="vtinfo" id="vtinfo"></div>
-    <div class="vtw" id="vtw"><div class="vtb" id="vtb"></div></div>
+    <!-- TRACK INFO -->
+    <div class="track-info">
+      <div class="track-hint" id="trackHint">KETUK NAMA TEMAN DI BAWAH ↓</div>
+      <div class="track-name" id="trackName"></div>
+      <div class="track-subtitle" id="trackSub">MENGIRIMKAN CINTA UNTUKMU ✨</div>
+      <div class="eq-bars" id="eqBars">
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+        <div class="eq-bar"></div>
+      </div>
+    </div>
 
+    <!-- PROGRESS -->
+    <div class="progress-wrap" id="progressWrap">
+      <span class="progress-time" id="timeElapsed">0:00</span>
+      <div class="progress-track" id="progressTrack" onclick="seekAudio(event)">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="progress-time" id="timeDuration">0:00</span>
+    </div>
+
+    <!-- CONTROLS -->
     <div class="vcontrols" id="vcontrols">
       <button class="vbtn" id="btnPrev" onclick="vPrev(event)">◄ PREV</button>
-      <button class="vbtn" id="btnPlayPause" onclick="toggleV(event)">⏸ PAUSE</button>
+      <button class="vbtn vbtn-play" id="btnPlayPause" onclick="toggleV(event)">⏸ PAUSE</button>
       <button class="vbtn" id="btnNext" onclick="vNext(event)">NEXT ►</button>
     </div>
 
-    <div class="vma" id="vma"></div>
+    <!-- DOTS -->
     <div class="vdots" id="vdots"></div>
   </div>
 
   <!-- FRIENDS GRID -->
   <div class="friends-section">
-    <h2>🎤 PILIH PESAN TEMANMU</h2>
+    <div class="section-label">🎤 PILIH PESAN</div>
+    <h2>DARI SAHABAT-SAHABATMU</h2>
     <div class="friends-grid" id="friendsGrid"></div>
   </div>
 
+  <!-- FOOTER -->
   <div class="footer">
     <p>dibuat dengan 💖 untukmu, nica</p>
-    <a href="index.html">← KEMBALI KE PETUALANGAN</a>
+    <a href="index.html" class="back-link">← KEMBALI KE PETUALANGAN</a>
   </div>
 </div>
 
 <script>
 const friendsList = [
-  {name:"Rani",    audio:"audio/rani.ogg"},
-  {name:"Manda",   audio:"audio/manda.ogg"},
-  {name:"Resta",   audio:"audio/restavia.ogg"},
-  {name:"Dewi",    audio:"audio/dewi.ogg"},
-  {name:"Nanda",   audio:"audio/nanda.ogg"},
-  {name:"Destia",  audio:"audio/destia.ogg"},
-  {name:"Dave",    audio:"audio/dave.ogg"},
-  {name:"Aurel",   audio:"audio/aurel.m4a"},
-  {name:"Ayu",     audio:"audio/ayu.m4a"},
-  {name:"Eca",     audio:"audio/eca.opus"},
-  {name:"Ferin",   audio:"audio/ferin.m4a"},
-  {name:"Andhin",  audio:"audio/andhin.m4a"},
-  {name:"Sem",     audio:"audio/sem.m4a"},
-  {name:"Duta",    audio:"audio/duta.mpeg"}
+  {name:"Rani",    audio:"audio/rani.ogg",    emoji:"🌸"},
+  {name:"Manda",   audio:"audio/manda.ogg",   emoji:"🌟"},
+  {name:"Resta",   audio:"audio/restavia.ogg", emoji:"💕"},
+  {name:"Dewi",    audio:"audio/dewi.ogg",    emoji:"🌷"},
+  {name:"Nanda",   audio:"audio/nanda.ogg",   emoji:"✨"},
+  {name:"Destia",  audio:"audio/destia.ogg",  emoji:"🎀"},
+  {name:"Dave",    audio:"audio/dave.ogg",    emoji:"💫"},
+  {name:"Aurel",   audio:"audio/aurel.m4a",   emoji:"🌺"},
+  {name:"Ayu",     audio:"audio/ayu.m4a",     emoji:"🦋"},
+  {name:"Eca",     audio:"audio/eca.opus",    emoji:"🌙"},
+  {name:"Ferin",   audio:"audio/ferin.m4a",   emoji:"⭐"},
+  {name:"Andhin",  audio:"audio/andhin.m4a",  emoji:"🎵"},
+  {name:"Sem",     audio:"audio/sem.m4a",     emoji:"🎶"},
+  {name:"Duta",    audio:"audio/duta.mpeg",   emoji:"🎤"}
 ];
 
-// Patch jumlah di header
-document.querySelector('.p-header .sub').innerHTML =
-  `${friendsList.length} suara penuh cinta untukmu ✨<br>Ketuk nama teman untuk mendengarkan pesannya.`;
-
+// ── AUDIO ENGINE ──
 let vAudios = [];
 let currentTrackIdx = 0;
 let isPlaying = false;
 let progressInterval = null;
 let audioUnlocked = false;
+let playedTracks = new Set();
 
-const ma2   = document.getElementById("vma");
+// ── PARTICLES ──
+(function(){
+  const c = document.getElementById("ap-particles"); if(!c) return;
+  const cols=["rgba(255,105,180,.5)","rgba(255,51,133,.4)","rgba(255,182,193,.3)","rgba(255,255,255,.25)"];
+  for(let i=0;i<25;i++){
+    const p=document.createElement("div"); p.className="ap-particle";
+    const s=Math.random()*4+1.5;
+    p.style.cssText=`width:${s}px;height:${s}px;background:${cols[i%4]};left:${Math.random()*100}%;bottom:-10px;animation-delay:${Math.random()*12}s;animation-duration:${Math.random()*9+7}s;`;
+    c.appendChild(p);
+  }
+})();
+
+// ── BUILD DOM ──
 const dots2 = document.getElementById("vdots");
 const grid2 = document.getElementById("friendsGrid");
 
-// ── INIT DOM ──
-(function buildDOM(){
-  vAudios = friendsList.map(f => {
-    const a = new Audio(f.audio);
-    a.preload = "none"; // hemat data, load saat dipilih
-    return a;
+vAudios = friendsList.map(f => {
+  const a = new Audio(f.audio);
+  a.preload = "none";
+  return a;
+});
+
+document.getElementById("headerSub").innerHTML =
+  `${friendsList.length} suara penuh cinta untukmu ✨<br>Ketuk nama teman untuk mendengarkan pesannya.`;
+
+friendsList.forEach((f, i) => {
+  // Dot indicator
+  const dot = document.createElement("div");
+  dot.className = "vdot"; dot.id = "vd" + i;
+  dot.onclick = () => vGoTo(i);
+  dots2.appendChild(dot);
+
+  // Friend chip
+  const chip = document.createElement("div");
+  chip.className = "friend-chip"; chip.id = "fc" + i;
+  chip.innerHTML = `<span class="chip-emoji">${f.emoji}</span>${f.name}`;
+  chip.onclick = () => vGoTo(i);
+  grid2.appendChild(chip);
+});
+dots2.classList.add("show");
+
+// ── UNLOCK AUDIO ──
+// Auto-unlock on ANY touch/click — no blocking overlay needed
+function ensureUnlocked(cb) {
+  if (audioUnlocked) { if(cb) cb(); return; }
+  // Attempt silent unlock
+  const a = new Audio();
+  a.src = friendsList[0].audio;
+  a.volume = 0;
+  a.play().then(() => {
+    a.pause(); a.src = "";
+    audioUnlocked = true;
+    if (cb) cb();
+  }).catch(() => {
+    audioUnlocked = true; // Mark as attempted
+    if (cb) cb();
   });
-
-  friendsList.forEach((f, i) => {
-    // Message placeholder
-    const d = document.createElement("div");
-    d.className = "vmsg"; d.id = "vm" + i;
-    d.innerHTML = `<div class="vmsg-name">${f.name}</div><div class="vmsg-line"></div><div class="vmsg-tag">MENGIRIMKAN CINTA UNTUKMU ✨</div>`;
-    ma2.appendChild(d);
-
-    // Dot indicator
-    const dot = document.createElement("div");
-    dot.className = "vdot"; dot.id = "vd" + i;
-    dot.onclick = () => vGoTo(i);
-    dots2.appendChild(dot);
-
-    // Friend chip (tombol besar, mobile-friendly)
-    const chip = document.createElement("div");
-    chip.className = "friend-chip"; chip.id = "fc" + i;
-    chip.textContent = f.name;
-    chip.onclick = () => vGoTo(i);
-    grid2.appendChild(chip);
-  });
-})();
-
-// ── UNLOCK AUDIO (penting di iOS/Android — butuh gesture pertama) ──
-function unlockAudio() {
-  // Putar semua audio sebentar untuk unlock AutoPlay policy browser mobile
-  const silentUnlock = new Audio();
-  silentUnlock.src = friendsList[0].audio;
-  silentUnlock.volume = 0;
-  silentUnlock.play().then(() => {
-    silentUnlock.pause();
-    silentUnlock.src = "";
-  }).catch(() => {});
-
-  audioUnlocked = true;
-  document.getElementById("unlockOverlay").classList.add("hidden");
-
-  // Langsung mulai putar track pertama
-  playTrack(0);
 }
+
+// On first any interaction unlock audio
+['touchstart','pointerdown','click'].forEach(ev => {
+  document.addEventListener(ev, () => ensureUnlocked(null), {once: true, passive: true});
+});
 
 // ── STOP ALL ──
 function stopAllAudios() {
-  vAudios.forEach(a => { if (a) { a.pause(); a.currentTime = 0; } });
-  if (progressInterval) clearInterval(progressInterval);
+  vAudios.forEach(a => { if(a){ a.pause(); a.currentTime = 0; } });
+  if(progressInterval) clearInterval(progressInterval);
+}
+
+// ── FORMAT TIME ──
+function formatTime(s) {
+  if(!isFinite(s) || isNaN(s)) return "0:00";
+  const m = Math.floor(s/60), sec = Math.floor(s%60);
+  return `${m}:${sec.toString().padStart(2,'0')}`;
 }
 
 // ── PLAY TRACK ──
@@ -479,8 +618,7 @@ function playTrack(idx) {
   const audio  = vAudios[idx];
   const friend = friendsList[idx];
 
-  // Update UI
-  document.querySelectorAll(".vmsg").forEach(m => m.classList.remove("show"));
+  // Update dots & chips
   document.querySelectorAll(".vdot").forEach((d, i) => {
     d.className = "vdot" + (i < idx ? " past" : i === idx ? " now" : "");
   });
@@ -488,98 +626,124 @@ function playTrack(idx) {
     c.classList.toggle("playing", i === idx);
   });
 
-  const msgEl = document.getElementById("vm" + idx);
-  if (msgEl) msgEl.classList.add("show");
-
-  document.getElementById("vtinfo").innerText  = "▶ NOW PLAYING — " + friend.name.toUpperCase();
-  document.getElementById("vtinfo").classList.add("show");
-  document.getElementById("vtw").classList.add("show");
+  // Track info
+  document.getElementById("trackHint").classList.add("gone");
+  document.getElementById("trackName").textContent = friend.name;
+  document.getElementById("trackName").classList.add("show");
+  document.getElementById("trackSub").classList.add("show");
+  document.getElementById("eqBars").classList.add("show");
+  document.getElementById("eqBars").classList.remove("paused");
+  document.getElementById("progressWrap").classList.add("show");
   document.getElementById("vcontrols").classList.add("show");
-  document.getElementById("vhint").classList.add("gone");
   document.getElementById("vdisc").classList.add("spin");
   document.getElementById("varm").classList.add("on");
   document.getElementById("btnPlayPause").textContent = "⏸ PAUSE";
   isPlaying = true;
 
-  // Progress bar
-  const tb = document.getElementById("vtb");
-  tb.style.width = "0%";
+  // Progress reset
+  document.getElementById("progressFill").style.width = "0%";
+  document.getElementById("timeElapsed").textContent = "0:00";
+  document.getElementById("timeDuration").textContent = "0:00";
 
-  if (audio) {
-    audio.currentTime = 0;
-    audio.volume = 1;
-    audio.load(); // paksa load dulu
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(err => {
+  if(audio) {
+    audio.currentTime = 0; audio.volume = 1;
+    audio.load();
+    const pp = audio.play();
+    if(pp !== undefined) {
+      pp.catch(err => {
         console.warn("Autoplay blocked:", err);
-        // Tampilkan unlock overlay lagi jika blocked
-        document.getElementById("unlockOverlay").classList.remove("hidden");
+        // Try on next user gesture
+        const retry = () => { ensureUnlocked(() => audio.play().catch(()=>{})); };
+        document.addEventListener('touchstart', retry, {once:true});
+        document.addEventListener('click', retry, {once:true});
         isPlaying = false;
+        document.getElementById("btnPlayPause").textContent = "▶ PLAY";
+        document.getElementById("eqBars").classList.add("paused");
       });
     }
     audio.onended = () => vNext();
 
-    const startT = Date.now();
     progressInterval = setInterval(() => {
-      if (audio.duration && !isNaN(audio.duration)) {
-        tb.style.width = Math.min((audio.currentTime / audio.duration) * 100, 100) + "%";
-      } else {
-        tb.style.width = Math.min((Date.now() - startT) / 20000 * 100, 100) + "%";
+      if(audio.duration && !isNaN(audio.duration)) {
+        const pct = Math.min((audio.currentTime / audio.duration) * 100, 100);
+        document.getElementById("progressFill").style.width = pct + "%";
+        document.getElementById("timeElapsed").textContent = formatTime(audio.currentTime);
+        document.getElementById("timeDuration").textContent = formatTime(audio.duration);
       }
-    }, 200);
+    }, 250);
   }
+
+  playedTracks.add(idx);
+  // Mark played on chip
+  setTimeout(() => {
+    document.querySelectorAll(".friend-chip").forEach((c,i) => {
+      if(playedTracks.has(i) && i !== idx) c.classList.add("played");
+      else if(i !== idx) c.classList.remove("played");
+    });
+  }, 100);
+
+  // Scroll chip into view on mobile
+  const chip = document.getElementById("fc" + idx);
+  if(chip) chip.scrollIntoView({ behavior:"smooth", block:"nearest" });
 }
+
+// ── SEEK ──
+function seekAudio(e) {
+  const audio = vAudios[currentTrackIdx];
+  if(!audio || !audio.duration) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const pct = Math.max(0, Math.min(1, x / rect.width));
+  audio.currentTime = pct * audio.duration;
+}
+document.getElementById("progressTrack").addEventListener("touchstart", seekAudio, {passive:true});
 
 // ── TOGGLE PLAY/PAUSE ──
 function toggleV(e) {
-  if (e) e.stopPropagation();
-  if (!audioUnlocked) { unlockAudio(); return; }
-
-  if (!isPlaying) {
-    const audio = vAudios[currentTrackIdx];
-    if (audio) {
-      audio.play().catch(() => {});
+  if(e) e.stopPropagation();
+  ensureUnlocked(() => {
+    if(!isPlaying) {
+      const audio = vAudios[currentTrackIdx];
+      if(audio) audio.play().catch(()=>{});
+      document.getElementById("vdisc").classList.add("spin");
+      document.getElementById("varm").classList.add("on");
+      document.getElementById("btnPlayPause").textContent = "⏸ PAUSE";
+      document.getElementById("eqBars").classList.remove("paused");
+      isPlaying = true;
+    } else {
+      vAudios.forEach(a => { if(a && !a.paused) a.pause(); });
+      document.getElementById("vdisc").classList.remove("spin");
+      document.getElementById("varm").classList.remove("on");
+      document.getElementById("btnPlayPause").textContent = "▶ PLAY";
+      document.getElementById("eqBars").classList.add("paused");
+      isPlaying = false;
     }
-    document.getElementById("vdisc").classList.add("spin");
-    document.getElementById("varm").classList.add("on");
-    document.getElementById("btnPlayPause").textContent = "⏸ PAUSE";
-    isPlaying = true;
-  } else {
-    vAudios.forEach(a => { if (a && !a.paused) a.pause(); });
-    document.getElementById("vdisc").classList.remove("spin");
-    document.getElementById("varm").classList.remove("on");
-    document.getElementById("btnPlayPause").textContent = "▶ PLAY";
-    isPlaying = false;
-  }
+  });
 }
 
 function vGoTo(i) {
-  if (!audioUnlocked) {
-    // Jika belum unlock (tapi overlay sudah dismiss oleh sistem), coba langsung play
-    audioUnlocked = true;
-    document.getElementById("unlockOverlay").classList.add("hidden");
-  }
-  playTrack(i);
+  ensureUnlocked(() => playTrack(i));
 }
 
 function vNext(e) {
-  if (e) e.stopPropagation();
-  currentTrackIdx = (currentTrackIdx + 1) % friendsList.length;
-  playTrack(currentTrackIdx);
+  if(e) e.stopPropagation();
+  const next = (currentTrackIdx + 1) % friendsList.length;
+  ensureUnlocked(() => playTrack(next));
 }
 
 function vPrev(e) {
-  if (e) e.stopPropagation();
-  currentTrackIdx = (currentTrackIdx - 1 + friendsList.length) % friendsList.length;
-  playTrack(currentTrackIdx);
+  if(e) e.stopPropagation();
+  const prev = (currentTrackIdx - 1 + friendsList.length) % friendsList.length;
+  ensureUnlocked(() => playTrack(prev));
 }
 
-// Scroll dot indicator ke view saat track ganti
-function scrollToChip(idx) {
-  const chip = document.getElementById("fc" + idx);
-  if (chip) chip.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
-}
+// Auto-play first track when page loads (will work if user already unlocked audio from game)
+window.addEventListener('load', () => {
+  // Try to play automatically, no overlay
+  setTimeout(() => {
+    ensureUnlocked(() => playTrack(0));
+  }, 600);
+});
 </script>
 </body>
 </html>
