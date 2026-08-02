@@ -552,7 +552,7 @@ const grid2 = document.getElementById("friendsGrid");
 
 vAudios = friendsList.map(f => {
   const a = new Audio(f.audio);
-  a.preload = "none";
+  a.preload = "metadata";
   return a;
 });
 
@@ -626,15 +626,11 @@ function playTrack(idx) {
 
   if(audio) {
     audio.currentTime = 0; audio.volume = 1;
-    audio.load();
+    // NOTE: Do NOT call audio.load() here — it cancels the user gesture on Safari iOS
     const pp = audio.play();
     if(pp !== undefined) {
       pp.catch(err => {
         console.warn("Autoplay blocked:", err);
-        // Try on next user gesture
-        const retry = () => { ensureUnlocked(() => audio.play().catch(()=>{})); };
-        document.addEventListener('touchstart', retry, {once:true});
-        document.addEventListener('click', retry, {once:true});
         isPlaying = false;
         document.getElementById("btnPlayPause").textContent = "▶ PLAY";
         document.getElementById("eqBars").classList.add("paused");

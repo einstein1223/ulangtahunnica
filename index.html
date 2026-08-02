@@ -313,27 +313,39 @@
     }
     .twin-pair-container {
       position:relative; z-index:3; display:flex; align-items:center; justify-content:center;
-      max-width:900px; width:100%; transition:transform .6s ease,opacity .6s ease;
+      max-width:900px; width:100%;
     }
+    /* Gallery reveal — driven via inline style by JS */
     .twin-frame {
       position:relative; width:clamp(130px,30vw,320px); height:clamp(130px,30vw,320px);
       border-radius:50%; overflow:hidden;
       border:3px solid rgba(255,105,180,.5);
       box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 35px rgba(255,105,180,.25);
-      transition:all .5s ease; flex-shrink:0;
+      flex-shrink:0;
+      /* initial clip-path state — fully hidden circle */
+      clip-path: circle(0% at 50% 50%);
+      will-change: clip-path, transform, opacity;
     }
     .twin-frame img { width:100%; height:100%; object-fit:cover; display:block; filter:contrast(1.06) saturate(1.05); transition:transform .6s ease; }
-    .twin-frame:hover img { transform:scale(1.08); }
-    .twin-frame.left-photo { margin-right:-16px; z-index:2; }
-    .twin-frame.right-photo { margin-left:-16px; z-index:2; }
+    .twin-frame:hover img { transform:scale(1.06); }
+    .twin-frame.left-photo  { margin-right:-16px; z-index:2; }
+    .twin-frame.right-photo { margin-left:-16px;  z-index:2; }
     .twin-touch-glow {
       position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
       width:70px; height:clamp(120px,25vw,180px); border-radius:50%;
       background:radial-gradient(ellipse at center,rgba(255,51,133,.65) 0%,rgba(255,105,180,.3) 40%,transparent 80%);
-      filter:blur(14px); pointer-events:none; z-index:3; animation:seamPulse 3s ease-in-out infinite alternate;
+      filter:blur(14px); pointer-events:none; z-index:3;
+      opacity:0; transition:opacity .6s ease;
+      animation:seamPulse 3s ease-in-out infinite alternate;
     }
+    .twin-pair-container.revealed .twin-touch-glow { opacity:1; }
     @keyframes seamPulse { from{opacity:.6;transform:translate(-50%,-50%) scale(.9)} to{opacity:1;transform:translate(-50%,-50%) scale(1.15)} }
-    .twin-caption { margin-top:28px; text-align:center; max-width:90vw; z-index:4; padding: 0 16px; }
+    /* Caption — slides up from below */
+    .twin-caption {
+      margin-top:28px; text-align:center; max-width:90vw; z-index:4; padding: 0 16px;
+      opacity:0; transform:translateY(30px);
+      will-change: opacity, transform;
+    }
     .twin-caption h3 {
       font-family:'Space Mono',monospace; font-size:clamp(13px,2vw,18px); font-weight:700;
       color:#ff85c0; letter-spacing:.15em; text-transform:uppercase; margin-bottom:10px;
@@ -1700,10 +1712,37 @@ function initScrollEngine(){
       const pair=document.getElementById("tpair"+i);
       if(!section||!pair) continue;
       const rect=section.getBoundingClientRect();
-      const p=clamp(1-(rect.top/vh),0,1);
-      const op=clamp(p*2.5,0,1);
-      pair.style.opacity=op;
-      pair.style.transform=`translateY(${50*(1-op)}px) scale(${.9+op*.1})`;
+
+      // p: 0 (not yet in view) → 1 (fully centered)
+      const p = clamp(1 - rect.top / vh, 0, 1);
+
+      // ── Frames: clip-path circle reveal ──
+      // Left frame enters from the left (anchor 20% 50%), right from right (80% 50%)
+      const frameRadius = clamp(p * 1.8 * 100, 0, 100); // 0% → 100%
+      const leftFrame  = pair.querySelector('.left-photo');
+      const rightFrame = pair.querySelector('.right-photo');
+      if(leftFrame){
+        leftFrame.style.clipPath  = `circle(${frameRadius}% at 30% 50%)`;
+        leftFrame.style.transform = `translateX(${(1-clamp(p*2,0,1))*-60}px) scale(${0.85 + clamp(p*2,0,1)*0.15})`;
+        leftFrame.style.opacity   = clamp(p * 3, 0, 1);
+      }
+      if(rightFrame){
+        rightFrame.style.clipPath  = `circle(${frameRadius}% at 70% 50%)`;
+        rightFrame.style.transform = `translateX(${(1-clamp(p*2,0,1))*60}px) scale(${0.85 + clamp(p*2,0,1)*0.15})`;
+        rightFrame.style.opacity   = clamp(p * 3, 0, 1);
+      }
+
+      // Reveal glow once both frames are mostly in
+      if(p > 0.45) pair.classList.add('revealed');
+      else         pair.classList.remove('revealed');
+
+      // ── Caption: slide up once frames are well visible ──
+      const caption = section.querySelector('.twin-caption');
+      if(caption){
+        const capP = clamp((p - 0.4) / 0.4, 0, 1); // starts at p=0.4
+        caption.style.opacity   = capP;
+        caption.style.transform = `translateY(${(1-capP)*30}px)`;
+      }
     }
 
     [sceneText1,sceneText2].forEach((scene,idx)=>{
