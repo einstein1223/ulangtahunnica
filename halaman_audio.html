@@ -739,13 +739,7 @@ function vPrev(e) {
   ensureUnlocked(() => playTrack(prev));
 }
 
-// Auto-play first track when page loads (will work if user already unlocked audio from game)
-window.addEventListener('load', () => {
-  // Try to play automatically, no overlay
-  setTimeout(() => {
-    ensureUnlocked(() => playTrack(0));
-  }, 600);
-});
+
 </script>
 </body>
 </html>
