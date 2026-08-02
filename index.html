@@ -728,6 +728,7 @@ bgMusic.loop = true;
 bgMusic.volume = 0.25;
 
 const kuisSound = new Audio("audio/jokowi.mp3");
+kuisSound.preload = "auto";
 kuisSound.volume = 0.8;
 
 const vAudios = friendsList.map(f => {
@@ -753,8 +754,8 @@ function unlockAllAudios() {
   audioUnlockedGlobal = true;
 }
 
-// On first interaction anywhere, unlock all audios
-['touchstart', 'pointerdown', 'mousedown', 'click'].forEach(ev => {
+// On first interaction anywhere, unlock all audios (supporting touchend/mouseup for strict mobile browsers)
+['touchstart', 'touchend', 'pointerdown', 'mousedown', 'mouseup', 'click'].forEach(ev => {
   document.addEventListener(ev, unlockAllAudios, {once: true, passive: true});
 });
 
@@ -867,8 +868,10 @@ function initJoystick() {
   btnJump.addEventListener('touchstart', e=>{ e.preventDefault(); mobileKeys.jump=true; if(player.grounded&&!dialogOpen&&gameStarted){player.vy=player.jumpPow;player.grounded=false;} }, {passive:false});
   btnJump.addEventListener('touchend', e=>{ e.preventDefault(); mobileKeys.jump=false; }, {passive:false});
 
-  btnTalk.addEventListener('touchstart', e=>{
+  btnTalk.addEventListener('touchend', e=>{
     e.preventDefault();
+    // Ensure all audios are unlocked on this gesture too
+    unlockAllAudios();
     if(dialogOpen){tutupDialog();return;}
     npcs.forEach(n=>{let d=Math.hypot(player.x+player.width/2-n.x-n.w/2,player.y+player.height/2-n.y-n.h/2);if(d<75)mulaiDialog(n);});
     if(specialSurprise.active){let d=Math.hypot(player.x+player.width/2-specialSurprise.x-specialSurprise.width/2,player.y+player.height/2-specialSurprise.y-specialSurprise.height/2);if(d<80)mulaiDialog(specialSurprise);}
